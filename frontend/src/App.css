@@ -1,0 +1,86 @@
+
+/* Import Orbitron */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap');
+
+.App {
+    display: flex;
+    flex-direction: column; /* 设置flex方向为垂直 */
+    align-items: center; /* 水平居中 */
+  }
+  
+.Dashboard {
+    width: 180px; /* 圆的宽度 */
+    height: 180px; /* 圆的高度 */
+    background-color: black; /* 圆的填充颜色 */
+    border: 5px solid grey; /* 圆的边框颜色和粗细 */
+    border-radius: 50%; /* 使元素的角变成圆角形成圆 */
+    /* 可选：如果你想在App中居中显示圆，可以使用以下样式 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto; /* 在其父容器中居中 */
+}
+
+.GameButton {
+    width: 80px; /* 圆的宽度 */
+    height: 80px; /* 圆的高度 */
+    background-color: pink; /* 圆的填充颜色 */
+    border: 8px solid black; /* 圆的边框颜色和粗细 */
+    border-radius: 50%; /* 使元素的角变成圆角形成圆 */
+    /* 可选：如果你想在App中居中显示圆，可以使用以下样式 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto; /* 在其父容器中居中 */
+}
+
+.NumButton{
+    background-color: lightrey; /* 灰色背景 */
+    color: black; /* 黑色字体 */
+    font-family: 'Orbitron', sans-serif; /* 应用 Orbitron 字体 */
+    padding: 4px 5px; /* 根据文本长度自动调整按钮大小 */
+    margin: 0; /* 移除按钮间距让按钮紧挨着 */
+    cursor: pointer; /* 鼠标悬停时显示手形光标 */
+    border: 2px solid black; /* 圆的边框颜色和粗细 */
+    outline: none; /* 点击时无轮廓 */
+    border-radius: 15%; /* 圆角效果 */
+    display: inline-block; /* 使按钮水平排列 */
+    font-size: 12px; /* 增大字体大小 */
+    font-weight: bold;
+}
+
+.Indicator {
+    width: 10px; /* 圆的宽度 */
+    height: 10px; /* 圆的高度 */
+    /* background-color: yellowgreen;  */
+    border: 2px solid black; /* 圆的边框颜色和粗细 */
+    border-radius: 50%; /* 使元素的角变成圆角形成圆 */
+    /* 可选：如果你想在App中居中显示圆，可以使用以下样式 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto; /* 在其父容器中居中 */
+}
+
+.Yellowgreen {
+    background-color: yellowgreen; /* 圆的填充颜色 */
+}
+
+.Orangered  {
+    background-color: orangered ; /* 圆的填充颜色 */
+}
+
+.Gold {
+    background-color: gold /* 圆的填充颜色 */
+}
+
+.Dodgerblue {
+    background-color: dodgerblue; /* 圆的填充颜色 */
+}
+
+  
+/* 草稿 让内容水平排列*/
+.Container {
+    display: flex;
+    justify-content: center; /* 水平居中按钮 */
+  }
