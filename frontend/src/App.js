@@ -71,7 +71,7 @@ function App() {
         clearInterval(intervalId);
         alert('Game Over');
       }
-    }, 500 / 2); // 0.25 sec for show/hide flash
+    }, 400 / 2); // 0.2 sec for show/hide flash
   };
 
   const generateRandomNumber = () => {
@@ -82,11 +82,31 @@ function App() {
 
     // Set which button to flash
     setFlashingButton(colorMap[number]);
-    // Flash for 0.5 sec
+    // Stop Flashing
     setTimeout(() => {
       setFlashingButton('');
-    }, 500); 
+    }, 200); 
   };
+
+  const displayRound = () => {
+    let index = 0; // 用于跟踪当前显示的数组元素的索引
+
+    const intervalId = setInterval(() => {
+      if (index < gameArray.length) {
+        setFlashingButton(colorMap[gameArray[index]]); // 设置当前要闪烁的按钮
+        
+        // 立即停止闪烁，但留出足够的时间让用户看到闪烁效果
+        setTimeout(() => {
+          setFlashingButton('');
+        }, 200); 
+  
+        index++; // 移动到数组的下一个元素
+      } else {
+        clearInterval(intervalId); // 当遍历完数组时清除定时器
+      }
+    }, 1000); // 每1秒更新一次要闪烁的按钮
+  };
+  
   
   return (
     <div className = "App">
@@ -119,11 +139,12 @@ function App() {
       <button onClick={gameOver}>Game Over</button>
 
       <button onClick={generateRandomNumber}>Generate Random Number</button>
+      <button onClick={displayRound}>Display Round</button> 
       <div>{randomNumber !== null ? randomNumber : ''}</div>
 
-      {/* Show Game Array */}
+      {/* Game Array */}
       <div>  
-        <span> [ </span>
+        <span> Game Array: [ </span>
         {gameArray.map((num, index) => (
           <span key={index}>{num} </span> // 使用空格分隔数组中的每个数字
         ))}
