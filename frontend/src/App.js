@@ -9,6 +9,7 @@ function App() {
   const [gameStatus, setGameStatus] = useState('stop'); 
   const [buttonFlash, setButtonFlash] = useState(false); 
   const [randomNumber, setRandomNumber] = useState(null); // 1,2,3,4
+  const [gameArray, setGameArray] = useState([]); // Store the random Num
 
   useEffect(() => {
     let intervalId;
@@ -49,6 +50,9 @@ function App() {
   const gameOver = () => {
     setGameStatus('stop');
     setIndicatorColor('red');
+    setRandomNumber(null);
+    setGameArray([]);
+
     // 5次闪烁，每次包括"显示"和"隐藏"两个状态，所以总共是10
     let flashes = 10; 
 
@@ -66,6 +70,8 @@ function App() {
   const generateRandomNumber = () => {
     const number = Math.floor(Math.random() * 4) + 1;
     setRandomNumber(number);
+    // Insert Random Number into Game Array
+    setGameArray(prevArray => [...prevArray, number]); 
   };
   
   return (
@@ -100,6 +106,24 @@ function App() {
 
       <button onClick={generateRandomNumber}>Generate Random Number</button>
       <div>{randomNumber !== null ? randomNumber : ''}</div>
+
+      {/* Show Game Array */}
+      <div>  
+        <span> [ </span>
+        {gameArray.map((num, index) => (
+          <span key={index}>{num} </span> // 使用空格分隔数组中的每个数字
+        ))}
+        <span> ] </span>
+      </div>
+
+      {/* Delete it later */}
+      <p style={{color: 'red', textAlign: 'center'}}>
+        Button Color - Random Number <br />
+        Green = 1<br />
+        Red = 2<br />
+        Yellow = 3<br />
+        Blue = 4
+      </p>
     </div>
   );
 }
