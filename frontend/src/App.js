@@ -1,5 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import './App.css'
+
+// [Map] Num -> Color
+const colorMap = {
+  1: 'Green',
+  2: 'Red',
+  3: 'Yellow',
+  4: 'Blue'
+};
 
 function App() {
   const [startBtnPressed, setStartBtnPressed] = useState(false);
@@ -10,61 +18,60 @@ function App() {
   const [buttonFlash, setButtonFlash] = useState(false); 
   const [randomNumber, setRandomNumber] = useState(null); // 1,2,3,4
   const [gameArray, setGameArray] = useState([]); // Store the random Num
-
-  useEffect(() => {
-    let intervalId;
-
-    if (startBtnPressed && gameStartcountdown > 0) {
-      // Indicator -> Green [First]
-      setIndicatorColor('green');
-      setGameStatus('waiting...')
-
-      // Update GameStartcountdown every second
-      intervalId = setInterval(() => {
-        setGameStartCountDown((prevCountdown) => prevCountdown - 1);
-      }, 1000);
-
-    } else if (gameStartcountdown === 0) {
-      // Game Start
-      setGameStatus('start')
-      setShowGameStart(true); 
-      // Hide Text after one second
-      setTimeout(() => {
-        setShowGameStart(false);
-      }, 1000);
-
-      setStartBtnPressed(false); // Reset Start Status
-    }
-
-    // Delete Interval
-    return () => clearInterval(intervalId); 
-
-  },[startBtnPressed, gameStartcountdown]);
+  const [flashingButton, setFlashingButton] = useState(''); // Which Button to Flash
 
   const startGame = () => {
     setStartBtnPressed(true);
     setGameStartCountDown(3); // Reset GameStartCountDown to 3 Second
-    setIndicatorColor('red'); // Reset Indicator Color
-  };
+    setIndicatorColor('green'); // Set Indicator Color to Green
+    setGameStatus('waiting...');
+
+    let intervalId = setInterval(() => {
+      // Every 1 sec, CountDown - 1
+      setGameStartCountDown((prevCountdown) => {
+
+        // When count = 0, Game Start
+        if (prevCountdown - 1 === 0) {
+          setGameStatus('start');
+          // Show Text when game start
+          setShowGameStart(true);  
+          // Hide Text after 1 sec
+          setTimeout(() => {
+            setShowGameStart(false);
+          }, 1000);
+
+          // Clear Interval (Stop CountDown - 1)
+          clearInterval(intervalId); 
+        }
+
+        return prevCountdown - 1;
+      }); 
+    }, 1000); 
+
+  }; // end of Start Game
 
   const gameOver = () => {
     setGameStatus('stop');
     setIndicatorColor('red');
+    setStartBtnPressed(false); // Reset Start Status
     setRandomNumber(null);
     setGameArray([]);
 
-    // 5次闪烁，每次包括"显示"和"隐藏"两个状态，所以总共是10
+    // Flash 5 times (show flash + hide flash)
     let flashes = 10; 
 
+    // [JavaScript Closure]
     const intervalId = setInterval(() => {
-      setButtonFlash((prev) => !prev); // 切换GameButton的闪烁状态
+      // Toggle flash status of 4 GameButton 
+      setButtonFlash((prev) => !prev); 
       flashes--;
 
       if (flashes === 0) {
+        // Delete this Interval according to its ID
         clearInterval(intervalId);
         alert('Game Over');
       }
-    }, 500 / 2); // 500ms分为两个状态，所以每250ms切换一次状态
+    }, 500 / 2); // 0.25 sec for show/hide flash
   };
 
   const generateRandomNumber = () => {
@@ -72,6 +79,13 @@ function App() {
     setRandomNumber(number);
     // Insert Random Number into Game Array
     setGameArray(prevArray => [...prevArray, number]); 
+
+    // Set which button to flash
+    setFlashingButton(colorMap[number]);
+    // Flash for 0.5 sec
+    setTimeout(() => {
+      setFlashingButton('');
+    }, 500); 
   };
   
   return (
@@ -82,7 +96,7 @@ function App() {
         <div className = "Dashboard Circle">
           <div className = "ScoreBoard-Bar">
             <button className="ScoreBoard Score">10</button>
-              <button className="ScoreBoard CtrlBtn" onClick={startGame}>
+              <button className="ScoreBoard CtrlBtn" onClick={startGame} disabled={startBtnPressed}>
                 START
               </button>
             <button className="ScoreBoard Score">04</button>
@@ -91,10 +105,10 @@ function App() {
           <div className="Indicator Circle" 
           style={{ backgroundColor: indicatorColor }}></div> 
 
-          <div className={`GameButton Green Circle ${buttonFlash ? 'flash' : ''}`}></div>
-          <div className={`GameButton Red Circle ${buttonFlash ? 'flash' : ''}`}></div>
-          <div className={`GameButton Yellow Circle ${buttonFlash ? 'flash' : ''}`}></div>
-          <div className={`GameButton Blue Circle ${buttonFlash ? 'flash' : ''}`}></div>
+          <div className={`GameButton Green Circle ${buttonFlash ||flashingButton === 'Green' ? 'flash' : ''}`}></div>
+          <div className={`GameButton Red Circle ${buttonFlash ||flashingButton === 'Red' ? 'flash' : ''}`}></div>
+          <div className={`GameButton Yellow Circle ${buttonFlash ||flashingButton === 'Yellow' ? 'flash' : ''}`}></div>
+          <div className={`GameButton Blue Circle ${buttonFlash ||flashingButton === 'Blue' ? 'flash' : ''}`}></div>
         </div>
       </div> {/* end of Simon UI */}
       <div>{gameStatus}</div>
