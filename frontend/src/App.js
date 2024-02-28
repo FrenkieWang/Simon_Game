@@ -5,12 +5,15 @@ function App() {
   return (
     <div className = "App">
       Simon Game Controller
-      <div className = "Dashboard"></div>
       <div className = "Container">
-        <div className = "GameButton Yellowgreen"></div>
-        <div className = "GameButton Orangered"></div>
-        <div className = "GameButton Gold"></div>
-        <div className = "GameButton Dodgerblue"></div>
+        <div className = "Dashboard Black Circle"></div>
+        <div className = "Hidden Circle"></div>
+      </div>
+      <div className = "Container">
+        <div className = "GameButton Green Circle"></div>
+        <div className = "GameButton Red Circle"></div>
+        <div className = "GameButton Yellow Circle"></div>
+        <div className = "GameButton Blue Circle"></div>
       </div>
       <div className = "Container XXX">
         <button className="NumButton">10</button>
@@ -21,8 +24,6 @@ function App() {
         <div className = "Indicator Orangered"></div>
         <div className = "Indicator Yellowgreen"></div>
       </div>
-
-
     </div>
   );
 }

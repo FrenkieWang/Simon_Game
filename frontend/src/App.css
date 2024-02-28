@@ -7,13 +7,28 @@
     flex-direction: column; /* 设置flex方向为垂直 */
     align-items: center; /* 水平居中 */
   }
+
+.Circle{
+    border-radius: 50%; /* 使元素的角变成圆角形成圆 */
+}
   
 .Dashboard {
     width: 180px; /* 圆的宽度 */
     height: 180px; /* 圆的高度 */
     background-color: black; /* 圆的填充颜色 */
     border: 5px solid grey; /* 圆的边框颜色和粗细 */
-    border-radius: 50%; /* 使元素的角变成圆角形成圆 */
+    /* 可选：如果你想在App中居中显示圆，可以使用以下样式 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto; /* 在其父容器中居中 */
+}
+
+.Hidden {
+    width: 100px; /* 圆的宽度 */
+    height: 100px; /* 圆的高度 */
+    background-color: darkgray; /* 圆的填充颜色 */
+    border: 5px solid grey; /* 圆的边框颜色和粗细 */
     /* 可选：如果你想在App中居中显示圆，可以使用以下样式 */
     display: flex;
     justify-content: center;
@@ -62,19 +77,23 @@
     margin: auto; /* 在其父容器中居中 */
 }
 
-.Yellowgreen {
+.Black{
+    background-color: black; /* 圆的填充颜色 */
+}
+
+.Greed {
     background-color: yellowgreen; /* 圆的填充颜色 */
 }
 
-.Orangered  {
+.Red  {
     background-color: orangered ; /* 圆的填充颜色 */
 }
 
-.Gold {
+.Yellow {
     background-color: gold /* 圆的填充颜色 */
 }
 
-.Dodgerblue {
+.Blue {
     background-color: dodgerblue; /* 圆的填充颜色 */
 }
 
