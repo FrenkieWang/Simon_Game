@@ -6,7 +6,8 @@ function App() {
   const [indicatorColor, setIndicatorColor] = useState('red'); 
   const [gameStartcountdown, setGameStartCountDown] = useState(3);
   const [showGameStart, setShowGameStart] = useState(false); // The time for Game Start
-  const [gameStatus, setGameStatus] = useState('stop'); // The time for Game Start
+  const [gameStatus, setGameStatus] = useState('stop'); 
+  const [buttonFlash, setButtonFlash] = useState(false); 
 
   useEffect(() => {
     let intervalId;
@@ -43,6 +44,23 @@ function App() {
     setGameStartCountDown(3); // Reset GameStartCountDown to 3 Second
     setIndicatorColor('red'); // Reset Indicator Color
   };
+
+  const gameOver = () => {
+    setGameStatus('stop');
+    setIndicatorColor('red');
+    // 5次闪烁，每次包括"显示"和"隐藏"两个状态，所以总共是10
+    let flashes = 10; 
+
+    const intervalId = setInterval(() => {
+      setButtonFlash((prev) => !prev); // 切换GameButton的闪烁状态
+      flashes--;
+
+      if (flashes === 0) {
+        clearInterval(intervalId);
+        alert('Game Over');
+      }
+    }, 500 / 2); // 500ms分为两个状态，所以每250ms切换一次状态
+  };
   
   return (
     <div className = "App">
@@ -61,15 +79,18 @@ function App() {
           <div className="Indicator Circle" 
           style={{ backgroundColor: indicatorColor }}></div> 
 
-          <div className="GameButton Green Circle"></div>
-          <div className="GameButton Red Circle"></div>
-          <div className="GameButton Yellow Circle"></div>
-          <div className="GameButton Blue Circle"></div>
+          <div className={`GameButton Green Circle ${buttonFlash ? 'flash' : ''}`}></div>
+          <div className={`GameButton Red Circle ${buttonFlash ? 'flash' : ''}`}></div>
+          <div className={`GameButton Yellow Circle ${buttonFlash ? 'flash' : ''}`}></div>
+          <div className={`GameButton Blue Circle ${buttonFlash ? 'flash' : ''}`}></div>
         </div>
       </div> {/* end of Simon UI */}
       <div>{gameStatus}</div>
       {startBtnPressed && gameStartcountdown > 0 ? gameStartcountdown : ''}
       {showGameStart && <div>Game Start</div>} 
+
+      {/* 新增Game Over按钮 */}
+      <button onClick={gameOver}>Game Over</button>
     </div>
   );
 }

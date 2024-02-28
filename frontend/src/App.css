@@ -113,3 +113,8 @@
 .Circle{
     border-radius: 50%;
 }
+
+.flash {
+    opacity: 0.5; /* semi-transparent effect */
+    transition: opacity 250ms; /* Smooth Transition */
+  }
