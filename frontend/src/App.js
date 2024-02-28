@@ -2,45 +2,51 @@ import React, {useState, useEffect} from 'react';
 import './App.css'
 
 function App() {
-  const [isStarted, setIsStarted] = useState(false);
-  const [countdown, setCountdown] = useState(3);
+  const [startBtnPressed, setStartBtnPressed] = useState(false);
   const [indicatorColor, setIndicatorColor] = useState('red'); 
-  const [showOk, setShowOk] = useState(false); // The time for Game Start
+  const [gameStartcountdown, setGameStartCountDown] = useState(3);
+  const [showGameStart, setShowGameStart] = useState(false); // The time for Game Start
+  const [gameStatus, setGameStatus] = useState('stop'); // The time for Game Start
 
   useEffect(() => {
     let intervalId;
 
-    if (isStarted && countdown > 0) {
-      // Update CountDown every second
-      intervalId = setInterval(() => {
-        setCountdown((prevCountdown) => prevCountdown - 1);
-      }, 1000);
-    } else if (countdown === 0) {
+    if (startBtnPressed && gameStartcountdown > 0) {
+      // Indicator -> Green [First]
       setIndicatorColor('green');
+      setGameStatus('waiting...')
 
-      setShowOk(true); 
+      // Update GameStartcountdown every second
+      intervalId = setInterval(() => {
+        setGameStartCountDown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+
+    } else if (gameStartcountdown === 0) {
+      // Game Start
+      setGameStatus('start')
+      setShowGameStart(true); 
       // Hide Text after one second
       setTimeout(() => {
-        setShowOk(false);
+        setShowGameStart(false);
       }, 1000);
 
-      setIsStarted(false); // Reset Start Status
+      setStartBtnPressed(false); // Reset Start Status
     }
 
     // Delete Interval
     return () => clearInterval(intervalId); 
 
-  },[isStarted, countdown]);
+  },[startBtnPressed, gameStartcountdown]);
 
   const startGame = () => {
-    setIsStarted(true);
-    setCountdown(3); // Reset CountDown to 3 Second
+    setStartBtnPressed(true);
+    setGameStartCountDown(3); // Reset GameStartCountDown to 3 Second
     setIndicatorColor('red'); // Reset Indicator Color
   };
   
   return (
     <div className = "App">
-      Simon Game Controller
+      Simon Game Controller 
 
       <div className = "Simon UI">
         <div className = "Dashboard Circle">
@@ -61,8 +67,9 @@ function App() {
           <div className="GameButton Blue Circle"></div>
         </div>
       </div> {/* end of Simon UI */}
-      {isStarted && countdown > 0 ? countdown : ''}
-      {showOk && <div>Game Start</div>} 
+      <div>{gameStatus}</div>
+      {startBtnPressed && gameStartcountdown > 0 ? gameStartcountdown : ''}
+      {showGameStart && <div>Game Start</div>} 
     </div>
   );
 }
