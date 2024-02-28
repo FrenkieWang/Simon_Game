@@ -8,6 +8,7 @@ function App() {
   const [showGameStart, setShowGameStart] = useState(false); // The time for Game Start
   const [gameStatus, setGameStatus] = useState('stop'); 
   const [buttonFlash, setButtonFlash] = useState(false); 
+  const [randomNumber, setRandomNumber] = useState(null); // 1,2,3,4
 
   useEffect(() => {
     let intervalId;
@@ -61,6 +62,11 @@ function App() {
       }
     }, 500 / 2); // 500ms分为两个状态，所以每250ms切换一次状态
   };
+
+  const generateRandomNumber = () => {
+    const number = Math.floor(Math.random() * 4) + 1;
+    setRandomNumber(number);
+  };
   
   return (
     <div className = "App">
@@ -91,6 +97,9 @@ function App() {
 
       {/* 新增Game Over按钮 */}
       <button onClick={gameOver}>Game Over</button>
+
+      <button onClick={generateRandomNumber}>Generate Random Number</button>
+      <div>{randomNumber !== null ? randomNumber : ''}</div>
     </div>
   );
 }
