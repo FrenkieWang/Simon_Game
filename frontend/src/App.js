@@ -71,36 +71,36 @@ function App() {
 
   }; // end of Start Game
 
-  const gameOver = () => {  
-
+  const gameOver = () => {
     setGameStatus('stop');
     setIndicatorColor('red');
-    setStartBtnPressed(false); // Reset Start Status
+    setStartBtnPressed(false); // 重置开始状态
     setGameArray([]);
     setFlashIntervalTime(1000);
     setDisplayRoundTime(0);
-
-    // When lose the game, reset Input Array, Input Index and Round No.
+  
+    // 当游戏结束时，重置输入数组、输入索引和回合数
     setInputIndex(0);
     setInputArray([]);
     setRound(0);
-
-    // Flash 5 times (show flash + hide flash)
-    let flashes = 10; 
-
-    // [JavaScript Closure]
-    const intervalId = setInterval(() => {
-      // Toggle flash status of 4 GameButton 
-      setButtonFlash((prev) => !prev); 
-      flashes--;
-
-      if (flashes === 0) {
-        // Delete this Interval according to its ID
-        clearInterval(intervalId);
-        alert('Game Over');
+  
+    // 闪烁次数（显示加隐藏算一次闪烁）
+    let flashes = 10;
+  
+    const flashButtons = () => {
+      setButtonFlash(prev => !prev); // 切换按钮的闪烁状态
+      flashes--; // 减少一次闪烁次数
+  
+      if (flashes > 0) {
+        setTimeout(flashButtons, 200); // 设置下一次闪烁
+      } else {
+        alert('Game Over'); // 所有闪烁完成后显示游戏结束的警告
       }
-    }, 400 / 2); // 0.2 sec for show/hide flash
+    };
+  
+    flashButtons(); // 开始第一次闪烁
   };
+  
 
   const displayRound = () => {
     setInputIndex(0);
