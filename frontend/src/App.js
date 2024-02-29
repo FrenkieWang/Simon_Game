@@ -175,7 +175,7 @@ function App() {
     }
   };
 
-  const resetGameLoseCountdown = () => {
+  const beginGameLoseCountdown = () => {
 
   // 清除已存在的倒计时（如果有的话）
   if (intervalId) {
@@ -200,6 +200,17 @@ function App() {
     }, 1000);
   
     setIntervalId(newIntervalId);
+  };
+
+  const stopGameLoseCountdown = () => {
+    // 清除当前的倒计时定时器
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null); // 清除存储的定时器ID
+    }
+  
+    // 重置gameLoseCountdown状态为5
+    setGameLoseCountdown(5);
   };
 
   
@@ -233,7 +244,8 @@ function App() {
       
       <div><b>Round: {round}</b></div>
 
-      <button onClick={resetGameLoseCountdown}>Start 5-Second Countdown</button>
+      <button onClick={beginGameLoseCountdown}>Start 5-Second Countdown</button>
+      <button onClick={stopGameLoseCountdown}>Stop</button>
       {/* 显示剩余倒计时时间 */}
       <div style={{color:'red'}}>Time Left: {gameLoseCountdown} seconds</div> 
 
