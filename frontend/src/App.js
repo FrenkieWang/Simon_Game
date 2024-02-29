@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import './App.css'
 
 // [Map] Num -> Color
@@ -24,6 +24,7 @@ function App() {
  // 用于存储displayRound的执行时间
   const [displayRoundTime, setDisplayRoundTime] = useState(0); 
   const [inputArray, setInputArray] = useState([]);
+  const [inputIndex, setInputIndex] = useState(0); // 新的状态变量来跟踪输入的索引位置
 
   const startGame = () => {
     setStartBtnPressed(true);
@@ -61,6 +62,9 @@ function App() {
     setStartBtnPressed(false); // Reset Start Status
     setGameArray([]);
     setInputArray([]);
+    setIntervalTime(1000);
+    setDisplayRoundTime(0);
+    setInputIndex(0);
 
     // Flash 5 times (show flash + hide flash)
     let flashes = 10; 
@@ -128,7 +132,20 @@ function App() {
 
   // 定义处理函数，处理按钮点击事件
   const handleButtonClick = (number) => {
-    setInputArray(prevArray => [...prevArray, number]);
+    if (gameArray[inputIndex] === number) {
+      // 如果输入正确，更新inputArray和inputIndex
+      setInputArray(prevArray => [...prevArray, number]);
+      setInputIndex(prevIndex => prevIndex + 1);
+  
+      // 检查是否完成了当前轮次的所有输入
+      if (inputIndex + 1 === round) {
+        // 这里可以添加一些逻辑，比如提示用户正确完成了当前轮次
+        alert("You win in this round!");
+      }
+    } else {
+      // 如果输入错误，调用gameOver函数结束游戏
+      gameOver();
+    }
   };
   
   return (
@@ -191,14 +208,9 @@ function App() {
         <span> ] </span>
       </div>
 
-      {/* Delete it later */}
-      <p style={{color: 'blue', textAlign: 'center'}}>
-        Change Intervals according to <b>Round </b> <br />
-        Round 1 - 5 : 1 second <br />
-        Round 6 - 8 : 0.8 second<br />
-        Round 9 - 12 : 0.6 second<br />
-        Round 13 - max : 0.4 second
-      </p>
+      <div>Next index to input: {inputIndex}</div>
+      <div>Next answer should be: {gameArray[inputIndex]}</div>
+
     </div>
   );
 }
