@@ -43,16 +43,25 @@ function App() {
           setShowGameStart(true);  
           // Hide Text after 1 sec
           setTimeout(() => {
-            setShowGameStart(false);
+            setShowGameStart(false);            
           }, 1000);
 
           // Clear Interval (Stop CountDown - 1)
           clearInterval(intervalId); 
         }
-
         return prevCountdown - 1;
       }); 
-    }, 1000);  // This will change in UseEffect
+    }, 1000);  
+
+    /* Begin the first Round!
+       CountDown Time after Start  = 3 sec
+       The hint for "Game Start"   = 1 sec
+       Prepare Time for Player     = 1 sec  
+       So wait for 5 secs after Click "Start Button"
+    */
+    setTimeout(() => {
+      displayRound();
+    }, 5000)
 
   }; // end of Start Game
 
@@ -61,10 +70,13 @@ function App() {
     setIndicatorColor('red');
     setStartBtnPressed(false); // Reset Start Status
     setGameArray([]);
-    setInputArray([]);
     setIntervalTime(1000);
     setDisplayRoundTime(0);
+
+    // When lose the game, reset Input Array, Input Index and Round No.
     setInputIndex(0);
+    setInputArray([]);
+    setRound(0);
 
     // Flash 5 times (show flash + hide flash)
     let flashes = 10; 
@@ -84,6 +96,11 @@ function App() {
   };
 
   const displayRound = () => {
+    // When each Round begins, reset Input Array and Input Index.
+    setInputIndex(0);
+    setInputArray([]);
+
+    
     const startTime = Date.now(); // 记录开始时间
 
     // 首先生成一个1-4之间的随机数并添加到gameArray中
@@ -139,8 +156,8 @@ function App() {
   
       // 检查是否完成了当前轮次的所有输入
       if (inputIndex + 1 === round) {
-        // 这里可以添加一些逻辑，比如提示用户正确完成了当前轮次
-        alert("You win in this round!");
+        //alert("You win in this round!");
+        displayRound();
       }
     } else {
       // 如果输入错误，调用gameOver函数结束游戏
@@ -181,9 +198,8 @@ function App() {
       {startBtnPressed && gameStartcountdown > 0 ? gameStartcountdown : ''}
       {showGameStart && <div>Game Start</div>} 
 
-      {/* 新增Game Over按钮 */}
-      <button onClick={gameOver}>Game Over</button>
-      <button onClick={displayRound}>Display Round</button> 
+      {/* Break Row - Delete it later */}
+      <h5></h5>
 
       <div>Interval Time: {intervalTime}ms</div> {/* 显示当前间隔时间 */}
 
