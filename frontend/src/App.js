@@ -30,6 +30,7 @@ function App() {
 
   // set Countdown and Interval for every Click
   const [gameLoseCountdown, setGameLoseCountdown] = useState(5);
+  const [intervalId, setIntervalId] = useState(null);
 
   const startGame = () => {
     setStartBtnPressed(true);
@@ -178,16 +179,21 @@ function App() {
   };
 
   const resetGameLoseCountdown = () => {
+
+  // 清除已存在的倒计时（如果有的话）
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
       
     let gameOverTriggered = false; // 重置标志
     setGameLoseCountdown(5); // 重置倒计时为5秒
   
-    const intervalId = setInterval(() => {
+    const newIntervalId = setInterval(() => {
       setGameLoseCountdown(prevCountDown => {
         if (prevCountDown <= 1) {
           if (!gameOverTriggered) { // 检查标志以确保只触发一次
             gameOverTriggered = true; // 设置标志以防止再次触发
-            clearInterval(intervalId); // 清除interval
+            clearInterval(newIntervalId); // 清除interval
             alert('Game Over'); // 显示alert
           }
           return prevCountDown - 1;
@@ -196,6 +202,7 @@ function App() {
       });
     }, 1000);
   
+    setIntervalId(newIntervalId);
   };
 
   
