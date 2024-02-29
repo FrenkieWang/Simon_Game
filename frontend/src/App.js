@@ -30,7 +30,6 @@ function App() {
 
   // set Countdown and Interval for every Click
   const [gameLoseCountdown, setGameLoseCountdown] = useState(5);
-  const [clickIntervalId, setClickIntervalId] = useState(null);
 
   const startGame = () => {
     setStartBtnPressed(true);
@@ -71,7 +70,8 @@ function App() {
 
   }; // end of Start Game
 
-  const gameOver = () => {   
+  const gameOver = () => {  
+
     setGameStatus('stop');
     setIndicatorColor('red');
     setStartBtnPressed(false); // Reset Start Status
@@ -102,6 +102,7 @@ function App() {
   };
 
   const displayRound = () => {
+
     // When each Round begins, reset Input Array and Input Index.
     setInputIndex(0);
     setInputArray([]);
@@ -159,6 +160,7 @@ function App() {
 
   // When user clicks 1 of 4 GameButton
   const handleButtonClick = (number) => {
+    
     if (gameArray[inputIndex] === number) {
       // Input Correct -> Update inputArray and inputIndex
       setInputArray(prevArray => [...prevArray, number]);
@@ -176,23 +178,24 @@ function App() {
   };
 
   const resetGameLoseCountdown = () => {
-    // 清除已存在的倒计时（如果有的话）
-    if (clickIntervalId) {
-      clearInterval(clickIntervalId);
-    }
-  
+      
+    let gameOverTriggered = false; // 重置标志
     setGameLoseCountdown(5); // 重置倒计时为5秒
   
-    const newIntervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
       setGameLoseCountdown(prevCountDown => {
-        if (prevCountDown <= 1) { // 当倒计时到1时，下一步就是清除interval
-          clearInterval(newIntervalId);
+        if (prevCountDown <= 1) {
+          if (!gameOverTriggered) { // 检查标志以确保只触发一次
+            gameOverTriggered = true; // 设置标志以防止再次触发
+            clearInterval(intervalId); // 清除interval
+            alert('Game Over'); // 显示alert
+          }
+          return prevCountDown - 1;
         }
         return prevCountDown- 1; // 每次调用减少1秒
       });
     }, 1000);
   
-    setClickIntervalId(newIntervalId); // 保存新的interval ID以便之后清除
   };
 
   
@@ -225,6 +228,7 @@ function App() {
       </div> {/* end of Simon UI */}
       
       <div><b>Round: {round}</b></div>
+
       <button onClick={resetGameLoseCountdown}>Start 5-Second Countdown</button>
       {/* 显示剩余倒计时时间 */}
       <div style={{color:'red'}}>Time Left: {gameLoseCountdown} seconds</div> 
