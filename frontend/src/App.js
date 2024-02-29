@@ -12,29 +12,35 @@ const colorMap = {
 function App() {
   const [startBtnPressed, setStartBtnPressed] = useState(false);
   const [indicatorColor, setIndicatorColor] = useState('red'); 
-  const [gameStartcountdown, setGameStartCountDown] = useState(3);
   const [showGameStart, setShowGameStart] = useState(false); // The time for Game Start
   const [gameStatus, setGameStatus] = useState('stop'); 
   const [buttonFlash, setButtonFlash] = useState(false); 
   const [gameArray, setGameArray] = useState([]); // Store the random Num
   const [flashingButton, setFlashingButton] = useState(''); // Which Button to Flash
-  const [round, setRound] = useState(0); // 当前游戏回合
-  const [intervalTime, setIntervalTime] = useState(1000); // 间隔时间，默认为1000毫秒
+  const [round, setRound] = useState(0); 
+  const [flashIntervalTime, setFlashIntervalTime] = useState(1000); 
+  const [gameStartCountdown, setGameStartCountdown] = useState(3);
 
- // 用于存储displayRound的执行时间
-  const [displayRoundTime, setDisplayRoundTime] = useState(0); 
   const [inputArray, setInputArray] = useState([]);
-  const [inputIndex, setInputIndex] = useState(0); // 新的状态变量来跟踪输入的索引位置
+  // Use Index to check gameArray and inputArray
+  const [inputIndex, setInputIndex] = useState(0);
+
+  // [Unnecessary] Save the Time for each Round's Button Flash Display
+  const [displayRoundTime, setDisplayRoundTime] = useState(0); 
+
+  // set Countdown and Interval for every Click
+  const [gameLoseCountdown, setGameLoseCountdown] = useState(5);
+  const [clickIntervalId, setClickIntervalId] = useState(null);
 
   const startGame = () => {
     setStartBtnPressed(true);
-    setGameStartCountDown(3); // Reset GameStartCountDown to 3 Second
+    setGameStartCountdown(3); // Reset GameStartCountDown to 3 Second
     setIndicatorColor('green'); // Set Indicator Color to Green
     setGameStatus('waiting...');
 
     let intervalId = setInterval(() => {
       // Every 1 sec, CountDown - 1
-      setGameStartCountDown((prevCountdown) => {
+      setGameStartCountdown((prevCountdown) => {
 
         // When count = 0, Game Start
         if (prevCountdown - 1 === 0) {
@@ -65,12 +71,12 @@ function App() {
 
   }; // end of Start Game
 
-  const gameOver = () => {
+  const gameOver = () => {   
     setGameStatus('stop');
     setIndicatorColor('red');
     setStartBtnPressed(false); // Reset Start Status
     setGameArray([]);
-    setIntervalTime(1000);
+    setFlashIntervalTime(1000);
     setDisplayRoundTime(0);
 
     // When lose the game, reset Input Array, Input Index and Round No.
@@ -100,70 +106,95 @@ function App() {
     setInputIndex(0);
     setInputArray([]);
 
-    
-    const startTime = Date.now(); // 记录开始时间
+    // Record begin Time of Each Round
+    const startTime = Date.now();
 
-    // 首先生成一个1-4之间的随机数并添加到gameArray中
+    // Create a number from 1 - 4 and put into gameArray
     setGameArray(prevArray => {
       const randomNumber = Math.floor(Math.random() * 4) + 1;
       const newArray = [...prevArray, randomNumber];
 
-      // 根据 newArray 的长度更新 round
+      // Update Round Number
       const newRound = newArray.length;
       setRound(newRound);
 
-      // 根据 newRound 更新 intervalTime
-      let newIntervalTime = 1000; // 默认值
+      // Update flashIntervalTime according to new Round number
+      let newFlashIntervalTime = 1000; // Default VALUE
       if (newRound >= 5 && newRound <= 8) {
-        newIntervalTime = 800;
+        newFlashIntervalTime = 800;
       } else if (newRound >= 9 && newRound <= 12) {
-        newIntervalTime = 600;
+        newFlashIntervalTime = 600;
       } else if (newRound >= 13) {
-        newIntervalTime = 400;
+        newFlashIntervalTime = 400;
       }
-      setIntervalTime(newIntervalTime); // 更新 intervalTime
+      setFlashIntervalTime(newFlashIntervalTime); 
 
-      // 启动按钮闪烁逻辑
+      // **The logic of GameButton Flash
       let index = 0;
       const intervalId = setInterval(() => {
         if (index < newRound ) {
-          setFlashingButton(colorMap[newArray[index]]); // 设置当前要闪烁的按钮
+          // Set which button to flash - 0.2 sec
+          setFlashingButton(colorMap[newArray[index]]); 
 
-          // 立即停止闪烁，但留出足够的时间让用户看到闪烁效果
+          // Stop flashing - 0.2 sec
           setTimeout(() => {
             setFlashingButton('');
           }, 200);
-
-          index++; // 移动到数组的下一个元素
+          // next index of Game Array
+          index++;
         } else {
-          clearInterval(intervalId); // 当遍历完数组时清除定时器
-          const endTime = Date.now(); // 记录结束时间
-          // 计算并更新执行时间
-          setDisplayRoundTime(endTime - startTime - newIntervalTime);
-        }
-      }, newIntervalTime);
+          clearInterval(intervalId); 
 
-      return newArray; // renew gameArrayValue
-    }); // end of setGameArray
+          // Record the end time.
+          const endTime = Date.now(); 
+          // The last time useing Interval won't cause Button Flashing.
+          // It will only delete this Interval after traverse gameArray
+          setDisplayRoundTime(endTime - startTime - newFlashIntervalTime);
+        }
+      }, newFlashIntervalTime); //Update IntervalTime for the new Round
+
+      return newArray; 
+    }); // renew gameArray after the Round ends
   };
 
-  // 定义处理函数，处理按钮点击事件
+  // When user clicks 1 of 4 GameButton
   const handleButtonClick = (number) => {
     if (gameArray[inputIndex] === number) {
-      // 如果输入正确，更新inputArray和inputIndex
+      // Input Correct -> Update inputArray and inputIndex
       setInputArray(prevArray => [...prevArray, number]);
       setInputIndex(prevIndex => prevIndex + 1);
   
-      // 检查是否完成了当前轮次的所有输入
+      // Whether inputed all elements of gameArray without error
       if (inputIndex + 1 === round) {
         //alert("You win in this round!");
         displayRound();
       }
     } else {
-      // 如果输入错误，调用gameOver函数结束游戏
+      // Input Error -> invoke 'GameOver' function
       gameOver();
     }
   };
+
+  const resetGameLoseCountdown = () => {
+    // 清除已存在的倒计时（如果有的话）
+    if (clickIntervalId) {
+      clearInterval(clickIntervalId);
+    }
+  
+    setGameLoseCountdown(5); // 重置倒计时为5秒
+  
+    const newIntervalId = setInterval(() => {
+      setGameLoseCountdown(prevCountDown => {
+        if (prevCountDown <= 1) { // 当倒计时到1时，下一步就是清除interval
+          clearInterval(newIntervalId);
+        }
+        return prevCountDown- 1; // 每次调用减少1秒
+      });
+    }, 1000);
+  
+    setClickIntervalId(newIntervalId); // 保存新的interval ID以便之后清除
+  };
+
   
   return (
     <div className = "App">
@@ -193,24 +224,23 @@ function App() {
         </div>{/* end of Dashboard Circle */}
       </div> {/* end of Simon UI */}
       
-      <div><b>Round: {round}</b></div> {/* 显示当前回合 */}
+      <div><b>Round: {round}</b></div>
+      <button onClick={resetGameLoseCountdown}>Start 5-Second Countdown</button>
+      {/* 显示剩余倒计时时间 */}
+      <div style={{color:'red'}}>Time Left: {gameLoseCountdown} seconds</div> 
+
       <div>{gameStatus}</div>
-      {startBtnPressed && gameStartcountdown > 0 ? gameStartcountdown : ''}
+      {startBtnPressed && gameStartCountdown > 0 ? gameStartCountdown : ''}
       {showGameStart && <div>Game Start</div>} 
 
-      {/* Break Row - Delete it later */}
-      <h5></h5>
-
-      <div>Interval Time: {intervalTime}ms</div> {/* 显示当前间隔时间 */}
-
-      {/* 在界面上显示displayRound的执行时间 */}
+      <div>Interval Time: {flashIntervalTime}ms</div> 
       <div style = {{color:'blue'}}>Display Round Time: {displayRoundTime}ms</div>
       
       {/* Game Array */}
       <div>  
         <span> Game Array: [ </span>
         {gameArray.map((num, index) => (
-          <span key={index}>{num} </span> // 使用空格分隔数组中的每个数字
+          <span key={index}>{num} </span> // a space to split
         ))}
         <span> ] </span>
       </div>
@@ -219,7 +249,7 @@ function App() {
       <div>  
         <span> Input Array: [ </span>
         {inputArray.map((num, index) => (
-          <span key={index}>{num} </span> // 使用空格分隔数组中的每个数字
+          <span key={index}>{num} </span> // a space to split
         ))}
         <span> ] </span>
       </div>
