@@ -16,7 +16,6 @@ function App() {
   const [showGameStart, setShowGameStart] = useState(false); // The time for Game Start
   const [gameStatus, setGameStatus] = useState('stop'); 
   const [buttonFlash, setButtonFlash] = useState(false); 
-  const [randomNumber, setRandomNumber] = useState(null); // 1,2,3,4
   const [gameArray, setGameArray] = useState([]); // Store the random Num
   const [flashingButton, setFlashingButton] = useState(''); // Which Button to Flash
   const [round, setRound] = useState(0); // 当前游戏回合
@@ -24,22 +23,6 @@ function App() {
 
  // 用于存储displayRound的执行时间
   const [displayRoundTime, setDisplayRoundTime] = useState(0); 
-
-  useEffect(() => {
-    const currentRound = gameArray.length; // 直接使用 gameArray.length 获取当前回合数
-    setRound(currentRound); // 更新 round 的状态
-  
-    // 根据当前回合数调整间隔时间
-    if (currentRound >= 5 && currentRound <= 8) {
-      setIntervalTime(800);
-    } else if (currentRound >= 9 && currentRound <= 12) {
-      setIntervalTime(600);
-    } else if (currentRound >= 13) {
-      setIntervalTime(400);
-    } else {
-      setIntervalTime(1000); // 默认间隔时间
-    }
-  }, [gameArray.length]); // 依赖于 gameArray.length 的变化
 
   const startGame = () => {
     setStartBtnPressed(true);
@@ -75,7 +58,6 @@ function App() {
     setGameStatus('stop');
     setIndicatorColor('red');
     setStartBtnPressed(false); // Reset Start Status
-    setRandomNumber(null);
     setGameArray([]);
 
     // Flash 5 times (show flash + hide flash)
@@ -95,43 +77,52 @@ function App() {
     }, 400 / 2); // 0.2 sec for show/hide flash
   };
 
-  const generateRandomNumber = () => {
-    const number = Math.floor(Math.random() * 4) + 1;
-    setRandomNumber(number);
-    // Insert Random Number into Game Array
-    setGameArray(prevArray => [...prevArray, number]); 
-
-    // Set which button to flash
-    setFlashingButton(colorMap[number]);
-    // Stop Flashing
-    setTimeout(() => {
-      setFlashingButton('');
-    }, 200); 
-  };
-
   const displayRound = () => {
     const startTime = Date.now(); // 记录开始时间
-    let index = 0; // 用于跟踪当前显示的数组元素的索引
+    
+  // 首先生成一个1-4之间的随机数并添加到gameArray中
+  setGameArray(prevArray => {
+    const randomNumber = Math.floor(Math.random() * 4) + 1;
+    const newArray = [...prevArray, randomNumber];
 
+    // 根据 newArray 的长度更新 round
+    const newRound = newArray.length;
+    setRound(newRound);
+
+    // 根据 newRound 更新 intervalTime
+    let newIntervalTime = 1000; // 默认值
+    if (newRound >= 5 && newRound <= 8) {
+      newIntervalTime = 800;
+    } else if (newRound >= 9 && newRound <= 12) {
+      newIntervalTime = 600;
+    } else if (newRound >= 13) {
+      newIntervalTime = 400;
+    }
+    setIntervalTime(newIntervalTime); // 更新 intervalTime
+
+    // 启动按钮闪烁逻辑
+    let index = 0;
     const intervalId = setInterval(() => {
-      if (index < gameArray.length) {
-        setFlashingButton(colorMap[gameArray[index]]); // 设置当前要闪烁的按钮
-        
+      if (index < newRound ) {
+        setFlashingButton(colorMap[newArray[index]]); // 设置当前要闪烁的按钮
+
         // 立即停止闪烁，但留出足够的时间让用户看到闪烁效果
         setTimeout(() => {
           setFlashingButton('');
-        }, 200); 
-  
+        }, 200);
+
         index++; // 移动到数组的下一个元素
       } else {
         clearInterval(intervalId); // 当遍历完数组时清除定时器
         const endTime = Date.now(); // 记录结束时间
-        // 计算并更新执行时间, 减去释放Interval的时间
-        setDisplayRoundTime(endTime - startTime - intervalTime); 
+        // 计算并更新执行时间
+        setDisplayRoundTime(endTime - startTime - newIntervalTime);
       }
-    }, intervalTime); // update by useEffect
-  };
-  
+    }, newIntervalTime);
+
+    return newArray; // 更新gameArray状态
+  });
+};
   
   return (
     <div className = "App">
@@ -163,8 +154,6 @@ function App() {
 
       {/* 新增Game Over按钮 */}
       <button onClick={gameOver}>Game Over</button>
-
-      <button onClick={generateRandomNumber}>Generate Random Number</button>
       <button onClick={displayRound}>Display Round</button> 
 
       {/* Game Array */}
