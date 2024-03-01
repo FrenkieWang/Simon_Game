@@ -36,6 +36,8 @@ function App() {
   const [highestRound, setHighestRound] = useState(0); // To store the highest round achieved
   const [currentRound, setCurrentRound] = useState(0); // To store the current round value
 
+  const [pressedButton, setPressedButton] = useState(''); // 追踪被按下的按钮
+
   useEffect(() => {
     let intervalId;
 
@@ -237,6 +239,12 @@ function App() {
     setGameLoseCountdown(5); // 重置倒计时为5秒
   };
 
+  // 新的 handleButtonMouseDown 函数
+  const handleButtonMouseDown = (color) => {
+    setPressedButton(color); // 设置被按下的按钮颜色
+    setTimeout(() => setPressedButton(''), 200); // 设置短暂的延迟后清除状态，以产生闪烁效果
+  };
+
   useEffect(()=>{
     if(gameLoseCountdown ===0) gameOver();
 
@@ -262,14 +270,14 @@ function App() {
           <div className="Indicator Circle" 
           style={{ backgroundColor: indicatorColor }}></div> 
 
-          <div className={`GameButton Green Circle ${buttonFlash ||flashingButton === 'Green' ? 'flash' : ''}`} 
-                onClick={() => handleButtonClick(1)}></div>
-          <div className={`GameButton Red Circle ${buttonFlash ||flashingButton === 'Red' ? 'flash' : ''}`}
-                onClick={() => handleButtonClick(2)}></div>
-          <div className={`GameButton Yellow Circle ${buttonFlash ||flashingButton === 'Yellow' ? 'flash' : ''}`} 
-                onClick={() => handleButtonClick(3)}></div>
-          <div className={`GameButton Blue Circle ${buttonFlash ||flashingButton === 'Blue' ? 'flash' : ''}`} 
-                onClick={() => handleButtonClick(4)}></div>
+          <div className={`GameButton Green Circle ${buttonFlash || flashingButton === 'Green' || pressedButton === 'Green' ? 'flash' : ''}`} 
+               onMouseDown={() => handleButtonMouseDown('Green')} onClick={() => handleButtonClick(1)}></div>
+          <div className={`GameButton Red Circle ${buttonFlash || flashingButton === 'Red' || pressedButton === 'Red' ? 'flash' : ''}`}
+               onMouseDown={() => handleButtonMouseDown('Red')} onClick={() => handleButtonClick(2)}></div>
+          <div className={`GameButton Yellow Circle ${buttonFlash || flashingButton === 'Yellow' || pressedButton === 'Yellow' ? 'flash' : ''}`} 
+               onMouseDown={() => handleButtonMouseDown('Yellow')} onClick={() => handleButtonClick(3)}></div>
+          <div className={`GameButton Blue Circle ${buttonFlash || flashingButton === 'Blue' || pressedButton === 'Blue' ? 'flash' : ''}`} 
+               onMouseDown={() => handleButtonMouseDown('Blue')} onClick={() => handleButtonClick(4)}></div>
         </div>{/* end of Dashboard Circle */}
       </div> {/* end of Simon UI */}
       
