@@ -190,8 +190,6 @@ function App() {
     setStartBtnPressed(false);
     setGameStatus('Game Lose');
     setIndicatorColor('red');
-    // Start Button can be pressed
-    setStartBtnPressed(false);
     // GameButton cannot click, when GameOve
     setIsButtonClickable(false); 
     stopGameLoseCountdown(); 
