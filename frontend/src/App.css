@@ -124,3 +124,9 @@
     opacity: 0.5; /* semi-transparent effect */
     transition: opacity 200ms; /* Smooth Transition */
   }
+
+.cheater {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+}

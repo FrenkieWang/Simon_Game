@@ -12,8 +12,7 @@ const colorMap = {
 function App() {
   const [startBtnPressed, setStartBtnPressed] = useState(false);
   const [indicatorColor, setIndicatorColor] = useState('red'); 
-  const [showGameStart, setShowGameStart] = useState(false); // The time for Game Start
-  const [gameStatus, setGameStatus] = useState('stop'); 
+  const [gameStatus, setGameStatus] = useState('Press Start Button to begin'); 
   const [buttonFlash, setButtonFlash] = useState(false); 
   const [gameArray, setGameArray] = useState([]); // Store the random Num
   const [flashingButton, setFlashingButton] = useState(''); // Which Button to Flash
@@ -39,6 +38,12 @@ function App() {
   const [pressedButton, setPressedButton] = useState(''); // 追踪被按下的按钮
   const [isButtonClickable, setIsButtonClickable] = useState(false); // 追踪按钮是否可以被点击
   const [isDisplayingRound, setIsDisplayingRound] = useState(false);
+
+  // Cheating Machine
+  const [isCheaterOpen, setIsCheaterOpen] = useState(false);
+  const toggleCheatingMachine = () => {
+    setIsCheaterOpen(!isCheaterOpen);
+  };
 
   useEffect(() => {
     let intervalId;
@@ -71,7 +76,7 @@ function App() {
     setStartBtnPressed(true);
     setGameStartCountdown(3); // Reset GameStartCountDown to 3 Second
     setIndicatorColor('green'); // Set Indicator Color to Green
-    setGameStatus('waiting...');
+    setGameStatus('Waiting...');
 
     let intervalId = setInterval(() => {
       // Every 1 sec, CountDown - 1
@@ -79,13 +84,7 @@ function App() {
 
         // When count = 0, Game Start
         if (prevCountdown - 1 === 0) {
-          setGameStatus('start');
-          // Show Text when game start
-          setShowGameStart(true);  
-          // Hide Text after 1 sec
-          setTimeout(() => {
-            setShowGameStart(false);            
-          }, 1000);
+          setGameStatus('Game Start');
 
           // Clear Interval (Stop CountDown - 1)
           clearInterval(intervalId); 
@@ -103,7 +102,7 @@ function App() {
     setTimeout(() => {
       displayRound();
       setIsButtonClickable(true); // 在倒计时结束后允许点击
-    }, gameStartCountdown * 1000); // 请确保这里使用的是正确的倒计时时间
+    }, 5000); // Make it deplay every time the Game starts
 
     
     setCurrentRound(0); // Reset the current round display when a new game starts
@@ -114,7 +113,7 @@ function App() {
     setIsButtonClickable(false); // 在游戏结束时禁止点击按钮
     stopGameLoseCountdown(); // 停止倒计时
 
-    setGameStatus('stop');
+    setGameStatus('Game Lose');
     setIndicatorColor('red');
     setStartBtnPressed(false); // 重置开始状态
     setGameArray([]);
@@ -151,6 +150,7 @@ function App() {
   
 
   const displayRound = () => {
+
     setIsDisplayingRound(true); // 开始展示回合动画
     setIsButtonClickable(false); // 确保按钮在展示动画时不可点击
     stopGameLoseCountdown(); // 停止当前的倒计时
@@ -271,7 +271,7 @@ function App() {
   
   return (
     <div className = "App">
-      Simon Game Controller 
+      <h1>Simon Game Controller </h1>
 
       <div className = "Simon UI">
         <div className = "Dashboard Circle">
@@ -303,40 +303,50 @@ function App() {
                onClick={() => handleButtonClick(4)}
                disabled={!isButtonClickable && !isDisplayingRound}></button>
         </div>{/* end of Dashboard Circle */}
-      </div> {/* end of Simon UI */}
-      
-      <div><b>Round: {round}</b></div>
+      </div> {/* end of Simon UI */}  
 
-      {/* 显示剩余倒计时时间 */}
-      <div style={{color:'red'}}>Time Left: {gameLoseCountdown} seconds</div> 
 
       <div>{gameStatus}</div>
-      {startBtnPressed && gameStartCountdown > 0 ? gameStartCountdown : ''}
-      {showGameStart && <div>Game Start</div>} 
+      {startBtnPressed && gameStartCountdown > 0 ? gameStartCountdown : ''}   
 
+      {/* Game Status Monitor */}
+      <div style={{ fontWeight:'bold', fontSize:'25px'}}>Game Round: {round}</div>
+      {/* Show Remaining Time before Game Lose */}
+      <div style={{color:'red', fontWeight:'bold', fontSize:'30px'}}>{gameLoseCountdown} seconds</div> 
+      {/* Monitor the running time */}
       <div>Interval Time: {flashIntervalTime}ms</div> 
       <div style = {{color:'blue'}}>Display Round Time: {displayRoundTime}ms</div>
       
-      {/* Game Array */}
-      <div>  
-        <span> Game Array: [ </span>
-        {gameArray.map((num, index) => (
-          <span key={index}>{num} </span> // a space to split
-        ))}
-        <span> ] </span>
-      </div>
+      <br />
+      <button onClick={toggleCheatingMachine}>
+        {isCheaterOpen ? 'Close Machine' : 'Open Cheater'}
+      </button>
+      {isCheaterOpen && (
+        <div className = "cheater">
+          <div style={{ fontWeight:'bold', fontSize:'20px'}}>This is the cheating machine:</div>       
+          <div>Please press: &nbsp;          
+            <span style={{ fontSize: '30px', fontWeight: 'bold', backgroundColor: 'lightgray', color: colorMap[gameArray[inputIndex]] }}>
+              {colorMap[gameArray[inputIndex]]}
+            </span>
+            &nbsp; Button
+          </div>
 
-      {/* Input Array */}
-      <div>  
-        <span> Input Array: [ </span>
-        {inputArray.map((num, index) => (
-          <span key={index}>{num} </span> // a space to split
-        ))}
-        <span> ] </span>
-      </div>
-
-      <div>Next index to input: {inputIndex}</div>
-      <div>Next answer should be: {gameArray[inputIndex]}</div>
+          <div>  
+            <span> Game Array: [ </span>
+            {gameArray.map((num, index) => (
+              <span key={index} style={{backgroundColor: 'lightgray', color: colorMap[num]}}>{num} </span> // a space to split
+            ))}
+            <span> ] </span>
+          </div>
+          <div>  
+            <span> Input Array: [ </span >
+            {inputArray.map((num, index) => (
+              <span key={index}  style={{backgroundColor: 'lightgray', color: colorMap[num]}}>{num} </span> // a space to split
+            ))}
+            <span> ] </span>
+          </div>
+        </div>
+      )}
 
     </div>
   );
