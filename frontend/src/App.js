@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css'
 
 // [Map] Num -> Color
@@ -30,9 +30,36 @@ function App() {
 
   // set Countdown and Interval for every Click
   const [gameLoseCountdown, setGameLoseCountdown] = useState(5);
-  const [intervalId, setIntervalId] = useState(null);
 
-  const startGame = () => {
+  const [isCountingDown, setIsCountingDown] = useState(false); // 新状态，控制倒计时是否开始
+
+  useEffect(() => {
+    let intervalId;
+
+    if (isCountingDown) {
+      intervalId = setInterval(() => {
+        setGameLoseCountdown((prevCountDown) => {
+          if (prevCountDown <= 1) {
+            clearInterval(intervalId); // 清除定时器
+            // alert('Game Over');
+            return 0; // 避免倒计时变成负数
+          }
+          return prevCountDown - 1;
+        });
+      }, 1000);
+    }
+
+    // 组件卸载或依赖项改变时清理定时器
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isCountingDown]); // 依赖项数组，当isCountingDown改变时重新运行effect
+
+  const gameStart = () => {
+    stopGameLoseCountdown(); // 停止倒计时
+
     setStartBtnPressed(true);
     setGameStartCountdown(3); // Reset GameStartCountDown to 3 Second
     setIndicatorColor('green'); // Set Indicator Color to Green
@@ -72,6 +99,8 @@ function App() {
   }; // end of Start Game
 
   const gameOver = () => {
+    stopGameLoseCountdown(); // 停止倒计时
+
     setGameStatus('stop');
     setIndicatorColor('red');
     setStartBtnPressed(false); // 重置开始状态
@@ -103,6 +132,8 @@ function App() {
   
 
   const displayRound = () => {
+    stopGameLoseCountdown(); // 停止当前的倒计时
+
     setInputIndex(0);
     setInputArray([]);
   
@@ -140,8 +171,15 @@ function App() {
           setTimeout(() => {
             const endTime = Date.now(); // 记录当前轮次结束的时间
             setDisplayRoundTime(endTime - startTime + newFlashIntervalTime - 200); // 更新显示的耗时
+
+          // 闪烁序列结束后，等待1秒后开始倒计时
+          setTimeout(() => {
+            stopGameLoseCountdown();
+            beginGameLoseCountdown(); // 重新开始倒计时
+          }, 1000);
           }, 200); // 等待最后一个按钮的闪烁结束
         }
+
       };
   
       // 开始第一个按钮的闪烁
@@ -155,6 +193,8 @@ function App() {
   
   // When user clicks 1 of 4 GameButton
   const handleButtonClick = (number) => {
+    stopGameLoseCountdown();
+    beginGameLoseCountdown(); // 开始倒计时
     
     if (gameArray[inputIndex] === number) {
       // Input Correct -> Update inputArray and inputIndex
@@ -176,42 +216,21 @@ function App() {
   };
 
   const beginGameLoseCountdown = () => {
-
-  // 清除已存在的倒计时（如果有的话）
-  if (intervalId) {
-    clearInterval(intervalId);
-  }
-      
-    let gameOverTriggered = false; // 重置标志
+    setIsCountingDown(true); // 开始倒计时
     setGameLoseCountdown(5); // 重置倒计时为5秒
-  
-    const newIntervalId = setInterval(() => {
-      setGameLoseCountdown(prevCountDown => {
-        if (prevCountDown <= 1) {
-          if (!gameOverTriggered) { // 检查标志以确保只触发一次
-            gameOverTriggered = true; // 设置标志以防止再次触发
-            clearInterval(newIntervalId); // 清除interval
-            alert('Game Over'); // 显示alert
-          }
-          return prevCountDown - 1;
-        }
-        return prevCountDown- 1; // 每次调用减少1秒
-      });
-    }, 1000);
-  
-    setIntervalId(newIntervalId);
   };
 
   const stopGameLoseCountdown = () => {
-    // 清除当前的倒计时定时器
-    if (intervalId) {
-      clearInterval(intervalId);
-      setIntervalId(null); // 清除存储的定时器ID
-    }
-  
-    // 重置gameLoseCountdown状态为5
-    setGameLoseCountdown(5);
+    setIsCountingDown(false); // 停止倒计时
+    setGameLoseCountdown(5); // 重置倒计时为5秒
   };
+
+  useEffect(()=>{
+    if(gameLoseCountdown ===0) gameOver();
+
+  },[gameLoseCountdown])
+
+
 
   
   return (
@@ -222,7 +241,7 @@ function App() {
         <div className = "Dashboard Circle">
           <div className = "ScoreBoard-Bar">
             <button className="ScoreBoard Score">10</button>
-              <button className="ScoreBoard CtrlBtn" onClick={startGame} disabled={startBtnPressed}>
+              <button className="ScoreBoard CtrlBtn" onClick={gameStart} disabled={startBtnPressed}>
                 START
               </button>
             <button className="ScoreBoard Score">04</button>
@@ -244,8 +263,6 @@ function App() {
       
       <div><b>Round: {round}</b></div>
 
-      <button onClick={beginGameLoseCountdown}>Start 5-Second Countdown</button>
-      <button onClick={stopGameLoseCountdown}>Stop</button>
       {/* 显示剩余倒计时时间 */}
       <div style={{color:'red'}}>Time Left: {gameLoseCountdown} seconds</div> 
 
