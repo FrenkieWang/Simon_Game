@@ -37,6 +37,8 @@ function App() {
   const [currentRound, setCurrentRound] = useState(0); // To store the current round value
 
   const [pressedButton, setPressedButton] = useState(''); // 追踪被按下的按钮
+  const [isButtonClickable, setIsButtonClickable] = useState(false); // 追踪按钮是否可以被点击
+  const [isDisplayingRound, setIsDisplayingRound] = useState(false);
 
   useEffect(() => {
     let intervalId;
@@ -63,6 +65,7 @@ function App() {
   }, [isCountingDown]); // 依赖项数组，当isCountingDown改变时重新运行effect
 
   const gameStart = () => {
+    setIsButtonClickable(false); // 在游戏开始的3秒倒计时期间禁止点击
     stopGameLoseCountdown(); // 停止倒计时
 
     setStartBtnPressed(true);
@@ -99,7 +102,8 @@ function App() {
     */
     setTimeout(() => {
       displayRound();
-    }, 5000)
+      setIsButtonClickable(true); // 在倒计时结束后允许点击
+    }, gameStartCountdown * 1000); // 请确保这里使用的是正确的倒计时时间
 
     
     setCurrentRound(0); // Reset the current round display when a new game starts
@@ -107,6 +111,7 @@ function App() {
   }; // end of Start Game
 
   const gameOver = () => {
+    setIsButtonClickable(false); // 在游戏结束时禁止点击按钮
     stopGameLoseCountdown(); // 停止倒计时
 
     setGameStatus('stop');
@@ -146,6 +151,8 @@ function App() {
   
 
   const displayRound = () => {
+    setIsDisplayingRound(true); // 开始展示回合动画
+    setIsButtonClickable(false); // 确保按钮在展示动画时不可点击
     stopGameLoseCountdown(); // 停止当前的倒计时
 
     setInputIndex(0);
@@ -198,6 +205,12 @@ function App() {
   
       // 开始第一个按钮的闪烁
       flashButton(0);
+
+      // 在动画结束后更新状态
+      setTimeout(() => {
+        setIsDisplayingRound(false); // 结束展示回合动画
+        setIsButtonClickable(true); // 允许点击按钮
+      }, 1000); /* 适当的延迟时间，确保在最后一个按钮闪完之后 */
   
       return newArray;
     });
@@ -207,6 +220,8 @@ function App() {
   
   // When user clicks 1 of 4 GameButton
   const handleButtonClick = (number) => {
+    if (!isButtonClickable) return; // 如果按钮不可点击，则不执行任何操作
+
     stopGameLoseCountdown();
     beginGameLoseCountdown(); // 开始倒计时 
     
@@ -246,6 +261,7 @@ function App() {
   };
 
   useEffect(()=>{
+    
     if(gameLoseCountdown ===0) gameOver();
 
   },[gameLoseCountdown])
@@ -270,14 +286,22 @@ function App() {
           <div className="Indicator Circle" 
           style={{ backgroundColor: indicatorColor }}></div> 
 
-          <div className={`GameButton Green Circle ${buttonFlash || flashingButton === 'Green' || pressedButton === 'Green' ? 'flash' : ''}`} 
-               onMouseDown={() => handleButtonMouseDown('Green')} onClick={() => handleButtonClick(1)}></div>
-          <div className={`GameButton Red Circle ${buttonFlash || flashingButton === 'Red' || pressedButton === 'Red' ? 'flash' : ''}`}
-               onMouseDown={() => handleButtonMouseDown('Red')} onClick={() => handleButtonClick(2)}></div>
-          <div className={`GameButton Yellow Circle ${buttonFlash || flashingButton === 'Yellow' || pressedButton === 'Yellow' ? 'flash' : ''}`} 
-               onMouseDown={() => handleButtonMouseDown('Yellow')} onClick={() => handleButtonClick(3)}></div>
-          <div className={`GameButton Blue Circle ${buttonFlash || flashingButton === 'Blue' || pressedButton === 'Blue' ? 'flash' : ''}`} 
-               onMouseDown={() => handleButtonMouseDown('Blue')} onClick={() => handleButtonClick(4)}></div>
+          <button className={`GameButton Green Circle ${buttonFlash || flashingButton === 'Green' || pressedButton === 'Green' ? 'flash' : ''} ${!isButtonClickable ? 'disabled' : ''}`} 
+               onMouseDown={() => handleButtonMouseDown('Green')} 
+               onClick={() => handleButtonClick(1)}
+               disabled={!isButtonClickable && !isDisplayingRound}></button>
+          <button className={`GameButton Red Circle ${buttonFlash || flashingButton === 'Red' || pressedButton === 'Red' ? 'flash' : ''} ${!isButtonClickable ? 'disabled' : ''}`}
+               onMouseDown={() => handleButtonMouseDown('Red')} 
+               onClick={() => handleButtonClick(2)}
+               disabled={!isButtonClickable && !isDisplayingRound}></button>
+          <button className={`GameButton Yellow Circle ${buttonFlash || flashingButton === 'Yellow' || pressedButton === 'Yellow' ? 'flash' : ''} ${!isButtonClickable ? 'disabled' : ''}`} 
+               onMouseDown={() => handleButtonMouseDown('Yellow')} 
+               onClick={() => handleButtonClick(3)}
+               disabled={!isButtonClickable && !isDisplayingRound}></button>
+          <button className={`GameButton Blue Circle ${buttonFlash || flashingButton === 'Blue' || pressedButton === 'Blue' ? 'flash' : ''} ${!isButtonClickable ? 'disabled' : ''}`} 
+               onMouseDown={() => handleButtonMouseDown('Blue')} 
+               onClick={() => handleButtonClick(4)}
+               disabled={!isButtonClickable && !isDisplayingRound}></button>
         </div>{/* end of Dashboard Circle */}
       </div> {/* end of Simon UI */}
       
