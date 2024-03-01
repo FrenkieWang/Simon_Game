@@ -33,6 +33,9 @@ function App() {
 
   const [isCountingDown, setIsCountingDown] = useState(false); // 新状态，控制倒计时是否开始
 
+  const [highestRound, setHighestRound] = useState(0); // To store the highest round achieved
+  const [currentRound, setCurrentRound] = useState(0); // To store the current round value
+
   useEffect(() => {
     let intervalId;
 
@@ -96,6 +99,9 @@ function App() {
       displayRound();
     }, 5000)
 
+    
+    setCurrentRound(0); // Reset the current round display when a new game starts
+
   }; // end of Start Game
 
   const gameOver = () => {
@@ -128,6 +134,12 @@ function App() {
     };
   
     flashButtons(); // 开始第一次闪烁
+
+    // Last Game = Lose Round - 1
+    if (round - 1 > highestRound) {
+      setHighestRound(round - 1); // Update the highest round achieved
+    }
+    setCurrentRound(round - 1); // Update the current round value to be displayed next to the start button
   };
   
 
@@ -194,7 +206,7 @@ function App() {
   // When user clicks 1 of 4 GameButton
   const handleButtonClick = (number) => {
     stopGameLoseCountdown();
-    beginGameLoseCountdown(); // 开始倒计时
+    beginGameLoseCountdown(); // 开始倒计时 
     
     if (gameArray[inputIndex] === number) {
       // Input Correct -> Update inputArray and inputIndex
@@ -240,11 +252,11 @@ function App() {
       <div className = "Simon UI">
         <div className = "Dashboard Circle">
           <div className = "ScoreBoard-Bar">
-            <button className="ScoreBoard Score">10</button>
+            <button className="ScoreBoard Score">{highestRound}</button>
               <button className="ScoreBoard CtrlBtn" onClick={gameStart} disabled={startBtnPressed}>
                 START
               </button>
-            <button className="ScoreBoard Score">04</button>
+            <button className="ScoreBoard Score">{currentRound}</button>
           </div>
 
           <div className="Indicator Circle" 
