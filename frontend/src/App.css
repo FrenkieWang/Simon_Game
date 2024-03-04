@@ -10,8 +10,8 @@
 .Simon {
     display: flex;
     flex-direction: row; 
-    align-items: center; 
     justify-content: center;
+    align-items: center; 
 
     width: 300px; 
     height: 300px; 
@@ -50,8 +50,12 @@
     font-weight: bold;
 }
 
-.CtrlBtn{
+.Start{
     cursor: pointer; 
+}
+
+.Start.disabled {
+    cursor: not-allowed; 
 }
 
 .Indicator {
@@ -70,7 +74,7 @@
     z-index: 10px;
 }
 
-.GameButton {
+.Controller {
     position: absolute;
 
     display: flex;
@@ -84,8 +88,8 @@
     cursor: pointer;
 }
 
-.GameButton.disabled {
-    cursor: not-allowed; /* 显示一个“不允许”的鼠标指针 */
+.Controller.disabled {
+    cursor: not-allowed; 
 }
 
 .Green {
@@ -120,10 +124,10 @@
     border-radius: 50%;
 }
 
-.flash {
+.Flash {
     opacity: 0.5; /* semi-transparent effect */
     transition: opacity 200ms; /* Smooth Transition */
-  }
+}
 
 .cheater {
     display: flex;

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import './App.css'
+import './App.css';
 
 // [Map] Num -> Color
 const colorMap = {
@@ -9,26 +9,22 @@ const colorMap = {
   4: 'Blue'
 };
 
-function App() {  
+function App() {
   // Part 1 - Start Game
+  const [gameStatus, setGameStatus] = useState('Press Start Button to begin'); 
+  const [indicatorColor, setIndicatorColor] = useState('red'); 
   const [startBtnPressed, setStartBtnPressed] = useState(false);
   const [gameStartCountdown, setGameStartCountdown] = useState(3);
 
   // Part 2 - Display  Round
-  const [gameStatus, setGameStatus] = useState('Press Start Button to begin'); 
-  const [indicatorColor, setIndicatorColor] = useState('red'); 
-  const [round, setRound] = useState(0); 
+  const [round, setRound] = useState(0);
   const [highestRound, setHighestRound] = useState(0); // To store the highest round achieved
   const [currentRound, setCurrentRound] = useState(0); // To store the current round value
+  const [flashIntervalTime, setFlashIntervalTime] = useState(1000); 
+  const [displayRoundTime, setDisplayRoundTime] = useState(0); 
   // Store the random Num created in each Round
   const [gameArray, setGameArray] = useState([]); 
-  // Use Index to check gameArray and inputArray
-  const [inputArray, setInputArray] = useState([]);
-  const [inputIndex, setInputIndex] = useState(0);
-  const [flashIntervalTime, setFlashIntervalTime] = useState(1000); 
-  // [Unnecessary] Save the Time for each Round's Button Flash Display
-  const [displayRoundTime, setDisplayRoundTime] = useState(0); 
-  
+
   // Part 3 - Lose Game
   const [buttonFlash, setButtonFlash] = useState(false); 
 
@@ -36,6 +32,9 @@ function App() {
   const [pressedButton, setPressedButton] = useState(''); // Track which is the pressed GameButton
   const [flashingButton, setFlashingButton] = useState(''); // Track which GameButton will flash
   const [isButtonClickable, setIsButtonClickable] = useState(false); // Track `disable` props.
+  // Use Index to check gameArray and inputArray
+  const [inputIndex, setInputIndex] = useState(0);
+  const [inputArray, setInputArray] = useState([]);
 
   // Part 5 - Control GameLose countdown
   const [gameLoseCountdown, setGameLoseCountdown] = useState(5);
@@ -66,7 +65,7 @@ function App() {
     }
 
     /* When React in Unmounting Stage / React Dependency changes,
-       clean the current Interval。 */
+      clean the current Interval。 */
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
@@ -80,9 +79,9 @@ function App() {
     setIsButtonClickable(false); // GameButton cannot click during 'GameStart' movie
     stopGameLoseCountdown(); 
 
-    setStartBtnPressed(true);
-    setCurrentRound(0); // Reset the current Round number when new game starts
+    setStartBtnPressed(true);    
     setGameStartCountdown(3); // Reset GameStartCountDown to 3 Sec
+    setCurrentRound(0); // Reset the current Round number when new game starts
     setIndicatorColor('green'); // Set Indicator Color to  `Green`
     setGameStatus('Waiting...');
 
@@ -107,15 +106,15 @@ function App() {
     */
    
     setTimeout(() => {
+      // alert('Game Start')
       displayRound();
-      setIsButtonClickable(true); // GameButton can click after 'GameStart' movie
     }, 4500); // Make it deplay every time the Game starts   
 
   }; // end of Start Game  
 
-  
   // Part 2 - Display  Round
-  function displayRound () {
+  function displayRound () {   
+
     // GameButton cannot click during 'Round Display' Movie
     setIsButtonClickable(false); 
     stopGameLoseCountdown(); 
@@ -127,12 +126,12 @@ function App() {
     const startTime = Date.now();
   
     // Change Game Array in every Round
-      setGameArray(prevArray => {
+    setGameArray(prevArray => {
       const randomNumber = Math.floor(Math.random() * 4) + 1;
       const newArray = [...prevArray, randomNumber];
       const newRound = newArray.length;
-      setRound(newRound);
-  
+      setRound(newRound); 
+
       // Change `ButtonFlash Intervals` according to the Round number
       let newFlashIntervalTime = 1000; // Default
       if (newRound >= 5 && newRound <= 8) {
@@ -143,7 +142,7 @@ function App() {
         newFlashIntervalTime = 400;
       }
       setFlashIntervalTime(newFlashIntervalTime);  
-      
+
       function flashButtonMovie (index) {        
         if (index < newRound) {
           setFlashingButton(colorMap[newArray[index]]); // begin Flash
@@ -152,7 +151,7 @@ function App() {
           // Go to next ButtonFlash with the FlashIntervalTime
           setTimeout(() => flashButtonMovie(index + 1), newFlashIntervalTime);
         }
-  
+
         // When it comes to the last element in GameArray
         if (index === newRound - 1) {
           setTimeout(() => {
@@ -164,7 +163,7 @@ function App() {
             setTimeout(() => {
               stopGameLoseCountdown();
               beginGameLoseCountdown(); 
-            }, 500);
+            }, 500); 
           }, 200); // After the `ButtonFlash` of last button
         }
 
@@ -187,10 +186,9 @@ function App() {
   function gameOver () {
 
     // Reset the game Status to Default
-    setStartBtnPressed(false);
     setGameStatus('Game Lose');
     setIndicatorColor('red');
-    // GameButton cannot click, when GameOve
+    // GameButton cannot click, when GameOver
     setIsButtonClickable(false); 
     stopGameLoseCountdown(); 
 
@@ -212,6 +210,7 @@ function App() {
       if (flashes > 0) {
         setTimeout(gameOverMovie, 200); // Go to next `Flash`
       } else {
+        setStartBtnPressed(false);
         alert('Game Over'); // When all Flash finished
       }
     };
@@ -226,12 +225,12 @@ function App() {
     setCurrentRound(round - 1); // Update the current round value to be displayed next to the start button
   };
 
-  
+
   // Part 4 - Handle GameButton Clicking
   function handleButtonClick (number) {
     // If Button cannot Click, perform no operation and return.
     if (!isButtonClickable) return; 
-
+    
     // Make `Flash` effect when GameButton is pressed
     setPressedButton(colorMap[number]); // according to its color
     setTimeout(() => setPressedButton(''), 200); 
@@ -239,28 +238,26 @@ function App() {
     // Begin a new Countdown
     stopGameLoseCountdown();
     beginGameLoseCountdown(); 
-    
+
     // Handle `Input`,  when the Button is Clicked
     if (gameArray[inputIndex] === number) {
-    // Status 1 - Input Correct -> Update inputArray and inputIndex
+      // Status 1 - Input Correct -> Update inputArray and inputIndex
       setInputArray(prevArray => [...prevArray, number]);
       setInputIndex(prevIndex => prevIndex + 1);
   
       /* When input all elements of gameArray without error,
-         begin the next Round after 1 SEC */
+          begin the next Round after 1 SEC */
       if (inputIndex + 1 === round) {
-        //alert("You win in this round!");
+        // alert("You win in this round!");
         setTimeout(() => {
           displayRound();
         }, 1000); 
-      }
-
+      }        
     // Status 2 - Input Error -> invoke 'GameOver' function
     } else {
       gameOver();
     }
-  };
-
+  }
 
   // Part 5 - Control GameLose countdown
   function beginGameLoseCountdown () {
@@ -271,14 +268,14 @@ function App() {
     setIsCountingDown(false); // Stop the Countdown Interval
     setGameLoseCountdown(5); // Reset Countdown to 5
   };
-  
+
 
   // Part 6 - Cheating Machine
   function toggleCheatingMachine () {
     setIsCheaterOpen(!isCheaterOpen);
   };
 
-  
+
   // [Listener 2] - Invoke GameOver when countdown reaches 0
   useEffect(()=>{    
     if(gameLoseCountdown ===0) gameOver();
@@ -292,43 +289,51 @@ function App() {
 
       <div className = "Simon UI">
         <div className = "Dashboard Circle">
+          <button className={`Controller Green Circle 
+            ${buttonFlash || flashingButton === 'Green' || pressedButton === 'Green' ? 'Flash' : ''}
+            ${!isButtonClickable ? 'disabled' : ''}`}
+            onClick={() => handleButtonClick(1)}
+            disabled={!isButtonClickable}> 
+          </button>
+          <button className={`Controller Red Circle 
+            ${buttonFlash || flashingButton === 'Red' || pressedButton === 'Red' ? 'Flash' : ''}
+            ${!isButtonClickable ? 'disabled' : ''}`}
+            onClick={() => handleButtonClick(2)}
+            disabled={!isButtonClickable}> 
+          </button>
+          <button className={`Controller Yellow Circle 
+            ${buttonFlash || flashingButton === 'Yellow' || pressedButton === 'Yellow' ? 'Flash' : ''}
+            ${!isButtonClickable ? 'disabled' : ''}`}
+            onClick={() => handleButtonClick(3)}
+            disabled={!isButtonClickable}> 
+          </button>
+          <button className={`Controller Blue Circle 
+            ${buttonFlash ||flashingButton === 'Blue' || pressedButton === 'Blue' ? 'Flash' : ''}
+            ${!isButtonClickable ? 'disabled' : ''}`}
+            onClick={() => handleButtonClick(4)}
+            disabled={!isButtonClickable}> 
+          </button>
+
           <div className = "ScoreBoard-Bar">
             <button className="ScoreBoard Score">{highestRound}</button>
-              <button className="ScoreBoard CtrlBtn" onClick={gameStart} disabled={startBtnPressed}>
-                START
-              </button>
+            <button className={`ScoreBoard Start ${startBtnPressed ? 'disabled' : ''}`} 
+              onClick={gameStart} 
+              disabled={startBtnPressed} >
+                START 
+            </button>
             <button className="ScoreBoard Score">{currentRound}</button>
-          </div>
-
-          <div className="Indicator Circle" 
+          </div>          
+          
+          <div className="Indicator Circle"
           style={{ backgroundColor: indicatorColor }}></div> 
-
-          <button className={`GameButton Green Circle 
-            ${buttonFlash || flashingButton === 'Green' || pressedButton === 'Green' ? 'flash' : ''} 
-            ${!isButtonClickable ? 'disabled' : ''}`} 
-               onClick={() => handleButtonClick(1)}
-               disabled={!isButtonClickable}></button>
-          <button className={`GameButton Red Circle
-            ${buttonFlash || flashingButton === 'Red' || pressedButton === 'Red' ? 'flash' : ''}
-            ${!isButtonClickable ? 'disabled' : ''}`}
-               onClick={() => handleButtonClick(2)}
-               disabled={!isButtonClickable}></button>
-          <button className={`GameButton Yellow Circle
-            ${buttonFlash || flashingButton === 'Yellow' || pressedButton === 'Yellow' ? 'flash' : ''}
-            ${!isButtonClickable ? 'disabled' : ''}`} 
-               onClick={() => handleButtonClick(3)}
-               disabled={!isButtonClickable}></button>
-          <button className={`GameButton Blue Circle 
-            ${buttonFlash || flashingButton === 'Blue' || pressedButton === 'Blue' ? 'flash' : ''} 
-            ${!isButtonClickable ? 'disabled' : ''}`} 
-               onClick={() => handleButtonClick(4)}
-               disabled={!isButtonClickable}></button>
-        </div>{/* end of Dashboard Circle */}
+        </div> {/* end of Dashboard Circle */}
       </div> {/* end of Simon UI */}  
+
+ 
 
       {/* Game Status Monitor */}
       <div>{gameStatus}</div>
-      {startBtnPressed && gameStartCountdown > 0 ? gameStartCountdown : ''}   
+      {startBtnPressed && gameStartCountdown > 0 ? gameStartCountdown : ''} 
       <div style={{ fontWeight:'bold', fontSize:'25px'}}>Game Round: {round}</div>
 
       {/* Show Remaining Time before Game Lose */}
@@ -336,11 +341,11 @@ function App() {
 
       {/* Monitor the running time */}
       <div>Interval Time: {flashIntervalTime}ms</div> 
-      <div style = {{color:'blue'}}>Display Round Time: {displayRoundTime}ms</div>
-      
+      <div style = {{color:'blue'}}>Display Round Time: {displayRoundTime}ms</div>  
+
       <br /> {/* Cheating Machine */}
       <button onClick={toggleCheatingMachine}>
-        {isCheaterOpen ? 'Close Machine' : 'Open Cheater'}
+        {isCheaterOpen ? 'Close Cheating Machine' : 'Open Cheating Machine'}
       </button>
       {isCheaterOpen && (
         <div className = "cheater">
@@ -368,8 +373,7 @@ function App() {
           </div>
         </div>
       )}
-
-    </div>
+    </div>    
   );
 }
 
