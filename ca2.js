@@ -154,8 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset Round Number
         currentRound = 0;
         roundInfoDisplay.textContent = `Game Round: ${currentRound}`;
-        currentScore = 0; // Reset currentScore to 0 because of incorrect input
-        currentScoreDisplay.textContent = currentScore.toString().padStart(2, '0');
 
         // 5 Flash Times (Open + Close)
         let count = 10; 
@@ -181,22 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Part 4 - Handle ControllerButton Clicking
     controllerButtons.forEach((button) => {
         button.addEventListener('click', function() {
-
-            /*
-
-                    // Calculate current Score and highest Score
-        let lastRound = currentRound - 1;
-        // Update current Score, pad '0' for 1-digit num
-        let textPadZeroRight = lastRound.toString().padStart(2, '0');
-        currentScoreDisplay.textContent = textPadZeroRight;
-        // Update highest Score , pad '0' for 1-digit num
-        if (currentRound - 1 > highestRound) {
-            highestRound = currentRound - 1;
-            let textPadZeroLeft = highestRound.toString().padStart(2, '0');
-            highestScoreDisplay.textContent = textPadZeroLeft;
-        }
-
-            */
 
             // Flash the button after clicking
             button.classList.add('Flash');
@@ -256,24 +238,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Part 5 - Control GameLose countdown
     const gameLoseCountdownDisplay = document.getElementById('gameLoseCountdown');  
-    var countDownInterval;  // Get 'id' of Interval for countdown
+    var intervalId;  // Get 'id' of Interval for countdown
 
     function beginGameLoseCountdown() {
         let countDown = 5;  
         gameLoseCountdownDisplay.textContent = `${countDown} seconds`;
 
-        countDownInterval = setInterval(function() {
+        intervalId = setInterval(function() {
             countDown--;
             gameLoseCountdownDisplay.textContent = `${countDown} seconds`;
 
             if (countDown === 0) {
-                clearInterval(countDownInterval);  // delete Interval
+                clearInterval(intervalId);  // delete Interval
                 gameOver(); // Trigger gameOver() function
             }
         }, 1000);  
     }
     function stopGameLoseCountdown() {
-        clearInterval(countDownInterval);  // Stop Countdown Interval
+        clearInterval(intervalId);  // Stop Countdown Interval
         gameLoseCountdownDisplay.textContent = '5 seconds';  // Reset to 5 second
     }
 

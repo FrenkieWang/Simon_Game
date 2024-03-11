@@ -158,6 +158,11 @@ function App(){
             // Calculate the `Elapsed Time` of this Round, cut the setTimeOut
             setDisplayRoundTime(endTime - startTime + newFlashIntervalTime - 200); 
 
+            // 1 SEC after `ButtonFlash` movie, GameButton can click now, 
+            setTimeout(() => {
+              setIsButtonClickable(true); 
+            }, 1000); 
+
             // 0.5 SEC after 'Round Display' Movie, begin a new Countdown
             setTimeout(() => {
               stopGameLoseCountdown();
@@ -169,11 +174,6 @@ function App(){
   
       // Begin at the First element in GameArray
       flashButtonMovie(0);
-
-      // 1 SEC after `ButtonFlash` movie, GameButton can click now, 
-      setTimeout(() => {
-        setIsButtonClickable(true); 
-      }, 1000); 
   
       return newArray;
     });
@@ -191,7 +191,6 @@ function App(){
 
     // Reset all the data
     setRound(0);
-    setCurrentScore(0);
     setGameArray([]);
     setFlashIntervalTime(1000);
     setDisplayRoundTime(0);

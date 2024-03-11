@@ -77,10 +77,6 @@
 .Controller {
     position: absolute;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     width: 90px; 
     height: 90px; 
     border: 8px solid black;
