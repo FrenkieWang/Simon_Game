@@ -246,6 +246,7 @@ function App(){
           begin the next Round after 1 SEC */
       if (inputIndex + 1 === round) {
         // alert("You win in this round!");
+        setIsButtonClickable(false); // Disable input immediately
         setTimeout(() => {
           displayRound();
         }, 1000); 
