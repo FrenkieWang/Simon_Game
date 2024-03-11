@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Game</title>
+    <link rel="stylesheet" href="ca2.css">
+    <script defer src="ca2.js"></script>
+</head>
+<body>
+    <div class="App">
+        <h1>Simon Game Controller</h1>
+        <div class="Simon UI">
+            <div class="Dashboard Circle">
+                <!-- Controller Buttons -->
+                <button class="Controller Green Circle"></button>
+                <button class="Controller Red Circle"></button>
+                <button class="Controller Yellow Circle"></button>
+                <button class="Controller Blue Circle"></button>
+
+                <!-- Scoreboard and Start Button -->
+                <div class="ScoreBoard-Bar">
+                    <button class="ScoreBoard Score" id="highestScore">00</button>
+                    <button class="ScoreBoard Start" id="startButton">START</button>
+                    <button class="ScoreBoard Score" id="currentScore">00</button>
+                </div>
+
+                <!-- Indicator -->
+                <div class="Indicator Circle" id="indicator"></div>
+            </div>
+        </div>
+
+        <!-- Game Status and Info -->
+        <div id="gameStatus">Press Start Button to begin</div>
+        <div id="gameStartCountdown"></div>
+        <div id="roundInfo" style="font-weight:bold; font-size:25px;">Game Round: 0</div>
+        <div id="gameLoseCountdown" style="color:red; font-weight:bold; font-size:30px;">5 seconds</div>
+        <div id="flashIntervalTime">Interval Time: 1000ms</div>
+        <div id="displayRoundTime" style="color:blue;">Display Round Time: 0ms</div>
+
+        <br></br>
+
+        <!-- Cheating Machine -->
+        <button id="toggleCheater">Open Cheating Machine</button>
+        <div class="cheater" id="cheater" style="display: none;">
+            <div style="font-weight:bold; font-size:20px;">This is the cheating machine:</div>
+            <div>Please press: <span id="cheaterHint" style="font-size: 30px; font-weight: bold; background-color: lightgray;"></span> Button</div>
+            <div>Input Array: <span id="inputArrayDisplay" style="background-color: lightgray;"></span></div>
+            <div>Game Array: <span id="gameArrayDisplay" style="background-color: lightgray;"></span></div>
+        </div>
+    </div>
+</body>
+</html>

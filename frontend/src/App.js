@@ -9,7 +9,7 @@ const colorMap = {
   4: 'Blue'
 };
 
-function App() {
+function App(){
   // Part 1 - Start Game
   const [gameStatus, setGameStatus] = useState('Press Start Button to begin'); 
   const [indicatorColor, setIndicatorColor] = useState('red'); 
@@ -18,8 +18,8 @@ function App() {
 
   // Part 2 - Display  Round
   const [round, setRound] = useState(0);
-  const [highestRound, setHighestRound] = useState(0); // To store the highest round achieved
-  const [currentRound, setCurrentRound] = useState(0); // To store the current round value
+  const [highestScore, setHighestScore] = useState(0); // To store the highest round achieved
+  const [currentScore, setCurrentScore] = useState(0); // To store the current round value
   const [flashIntervalTime, setFlashIntervalTime] = useState(1000); 
   const [displayRoundTime, setDisplayRoundTime] = useState(0); 
   // Store the random Num created in each Round
@@ -33,8 +33,8 @@ function App() {
   const [flashingButton, setFlashingButton] = useState(''); // Track which GameButton will flash
   const [isButtonClickable, setIsButtonClickable] = useState(false); // Track `disable` props.
   // Use Index to check gameArray and inputArray
-  const [inputIndex, setInputIndex] = useState(0);
   const [inputArray, setInputArray] = useState([]);
+  const [inputIndex, setInputIndex] = useState(0);
 
   // Part 5 - Control GameLose countdown
   const [gameLoseCountdown, setGameLoseCountdown] = useState(5);
@@ -73,7 +73,6 @@ function App() {
     };
   }, [isCountingDown]); // Run UseEffect, according to `isCountingDown` Status
 
-
   // Part 1 - Start Game
   function gameStart() {
     setIsButtonClickable(false); // GameButton cannot click during 'GameStart' movie
@@ -81,7 +80,7 @@ function App() {
 
     setStartBtnPressed(true);    
     setGameStartCountdown(3); // Reset GameStartCountDown to 3 Sec
-    setCurrentRound(0); // Reset the current Round number when new game starts
+    setCurrentScore(0); // Reset the current Round number when new game starts
     setIndicatorColor('green'); // Set Indicator Color to  `Green`
     setGameStatus('Waiting...');
 
@@ -166,7 +165,6 @@ function App() {
             }, 500); 
           }, 200); // After the `ButtonFlash` of last button
         }
-
       };
   
       // Begin at the First element in GameArray
@@ -181,7 +179,6 @@ function App() {
     });
   };
 
-
   // Part 3 - Lose Game
   function gameOver () {
 
@@ -194,6 +191,7 @@ function App() {
 
     // Reset all the data
     setRound(0);
+    setCurrentScore(0);
     setGameArray([]);
     setFlashIntervalTime(1000);
     setDisplayRoundTime(0);
@@ -217,17 +215,10 @@ function App() {
   
     // Begin at the first Flash
     gameOverMovie(); 
-
-    // Last Game = Lose Round - 1
-    if (round - 1 > highestRound) {
-      setHighestRound(round - 1); // Update the highest round achieved
-    }
-    setCurrentRound(round - 1); // Update the current round value to be displayed next to the start button
   };
 
-
   // Part 4 - Handle GameButton Clicking
-  function handleButtonClick (number) {
+  function handleButtonClick(number) {
     // If Button cannot Click, perform no operation and return.
     if (!isButtonClickable) return; 
     
@@ -244,6 +235,13 @@ function App() {
       // Status 1 - Input Correct -> Update inputArray and inputIndex
       setInputArray(prevArray => [...prevArray, number]);
       setInputIndex(prevIndex => prevIndex + 1);
+
+      // Record the Current Score and update the highest Score
+      setCurrentScore(prevCount => {
+        const newCount = prevCount + 1;
+        setHighestScore(prevHighScore => Math.max(prevHighScore, newCount));
+        return newCount; 
+      });
   
       /* When input all elements of gameArray without error,
           begin the next Round after 1 SEC */
@@ -252,7 +250,7 @@ function App() {
         setTimeout(() => {
           displayRound();
         }, 1000); 
-      }        
+      }  
     // Status 2 - Input Error -> invoke 'GameOver' function
     } else {
       gameOver();
@@ -269,24 +267,19 @@ function App() {
     setGameLoseCountdown(5); // Reset Countdown to 5
   };
 
-
   // Part 6 - Cheating Machine
   function toggleCheatingMachine () {
     setIsCheaterOpen(!isCheaterOpen);
   };
-
 
   // [Listener 2] - Invoke GameOver when countdown reaches 0
   useEffect(()=>{    
     if(gameLoseCountdown ===0) gameOver();
   },[gameLoseCountdown])  
 
-
-
-  return (
+  return(
     <div className = "App">
       <h1>Simon Game Controller </h1>
-
       <div className = "Simon UI">
         <div className = "Dashboard Circle">
           <button className={`Controller Green Circle 
@@ -315,26 +308,24 @@ function App() {
           </button>
 
           <div className = "ScoreBoard-Bar">
-            <button className="ScoreBoard Score">{highestRound}</button>
+            <button className="ScoreBoard Score">{highestScore < 10 ? `0${highestScore}` : highestScore}</button>
             <button className={`ScoreBoard Start ${startBtnPressed ? 'disabled' : ''}`} 
               onClick={gameStart} 
               disabled={startBtnPressed} >
                 START 
             </button>
-            <button className="ScoreBoard Score">{currentRound}</button>
+            <button className="ScoreBoard Score">{currentScore < 10 ? `0${currentScore}` : currentScore}</button>
           </div>          
-          
           <div className="Indicator Circle"
           style={{ backgroundColor: indicatorColor }}></div> 
-        </div> {/* end of Dashboard Circle */}
-      </div> {/* end of Simon UI */}  
+        </div>
+      </div>
 
- 
+      <div style={{ fontWeight:'bold', fontSize:'25px'}}>Game Round: {round}</div>
 
       {/* Game Status Monitor */}
       <div>{gameStatus}</div>
       {startBtnPressed && gameStartCountdown > 0 ? gameStartCountdown : ''} 
-      <div style={{ fontWeight:'bold', fontSize:'25px'}}>Game Round: {round}</div>
 
       {/* Show Remaining Time before Game Lose */}
       <div style={{color:'red', fontWeight:'bold', fontSize:'30px'}}>{gameLoseCountdown} seconds</div> 
@@ -374,7 +365,7 @@ function App() {
         </div>
       )}
     </div>    
-  );
+  )
 }
 
 export default App;
