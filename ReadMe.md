@@ -9,6 +9,9 @@ My deployed project:
 
 https://simon-game-six-gold.vercel.app/
 
+**Here is the interface of Simon Game**
+![Simon Game Interface](./Simon_Game_Interface.png)
+
 ## Game Rules
 1. Click the START button to begin and the game status indicator (red/green light below the START button) changes from red to green. The game will start 3 seconds after the green light is on.
 2. Simon will give the first signal (randomly flashing a colored button). Repeat the signal by clicking the same colored button.
@@ -33,8 +36,8 @@ https://simon-game-six-gold.vercel.app/
 3. Display each round - displayRound()
 4. Click the button - handleButtonClick(event)
 5. flash the button - buttonFlash(btnNumber)
-6. Start/reset countdown - beginGameLoseCountdown()
-7. Stop the countdown - stopGameLoseCountdown()
+6. Start/reset countDown - beginGameLoseCountDown()
+7. Stop the countDown - stopGameLoseCountDown()
 
 In addition, there are two asynchronous functions that need to be called
 1. delayed execution: setTimeOut(func,[time=5000])
@@ -52,19 +55,19 @@ gameStart() -> indicator turns green -> 3 seconds waiting -> displayRound()
 
 -> gameOver() is triggered -> all buttons falsh 5 times ->
 
-indicator turns red -> alert "Game Over".
+-> indicator turns red -> alert "Game Over".
 
 ## Programming Steps
 #### 1. In "App" pages, draw the required elements from top to buttom.
 #### 2. Combine elements, draw the Simon Game UI
 	Use a square container that is big enough to store the entire Simon UI.
-	Make a div to store GameStatus, divided into Stop[default], Waiting and Start
+	Make a div to store GameStatus, divided into Stop[default], Waiting and Start.
 #### 3. Button flashes when pressed - buttonFlash(btnNumber)
 	Press the Game Controller button and it will flash for 0.4 sec. 
 	How to realize flash? [CSS] opacity: 1 -> 0.5
 #### 4. Create the Game Start movie - gameStart()
-	Countdown - setInterval(func,[time])
-	Make a div to store the countdown, starting at 3 and ending at 0.
+	CountDown - setInterval(func,[time])
+	Make a div to store the countDown, starting at 3 and ending at 0.
 	Click Start to trigger the gameStart function:
         1) Indicator turns green immediately.
         2) Div changes every second 3 2 1 , at this time GameStatus -> Waiting
@@ -94,7 +97,7 @@ indicator turns red -> alert "Game Over".
 
 #### 8. Display movie in each Round - displayRound()
 	Make a temporary button that generates a new number 
-    to be inserted into the gameArray number 
+    to be inserted into the gameArray number. 
     and then trigger the displayRound function.
 
 	Every time a new number is generated, 
@@ -106,7 +109,7 @@ indicator turns red -> alert "Game Over".
 	Define 2 variables in each time displayRound() runs:
 		-- startTime and endTime.
 
-	Define 3 variables, record them in a div on the frontend
+	Define 3 variables, record them in a div on the frontend:
     1) Current Round number - currentRound
     2) Interval time between button flash - intervalTime
     3) Running time in each round: endTime - startTime
@@ -145,27 +148,27 @@ indicator turns red -> alert "Game Over".
     
     if (currentScore > highestScore)     [Update highestScore]
 
-#### 14. GameLose CountDown for 5 SEC - begin/stop GameLoseCountdown() 
-    1) beginGameLoseCountdown(): 
-        Reset the countdown to 5. 
+#### 14. GameLose CountDown for 5 SEC - begin/stop GameLoseCountDown() 
+    1) beginGameLoseCountDown(): 
+        Reset the countDown to 5. 
         Every second, countDow, = countDown -1. 
         When countDown becomes 0, trigger the gameOver() function.        
-    2) stopGameLoseCountdown(): 
-        Terminate the countdown, delete the countDown - clearInterval(intervalId);
+    2) stopGameLoseCountDown(): 
+        Terminate the countDown, delete the countDown - clearInterval(intervalId);
         Reset countDown to 5, and keep number stable.
 
     Make two temporary buttons to realize them respectively.
 	Remember to clean up the last Interval at any time
 
 #### 15. Set the logic of CountDown
-	1) gameOver() is triggered - stopGameLoseCountdown()
-	2) gameStart() is triggered - stopGameLoseCountdown()
+	1) gameOver() is triggered - stopGameLoseCountDown()
+	2) gameStart() is triggered - stopGameLoseCountDown()
 	Then gameStart() will trigger displayRound()).
 	3) displayRound() is triggered
-        a) When flash movie begins - stopGameLoseCountdown()
-		b) One SEC after flash movie finishes - beginGameLoseCountdown()
-	4) Button pressed in handleButtonClick(event) - beginGameLoseCountdown()
-	5) When 5 SEC Countdown to 0 -> trigger gameOver()
+        a) When flash movie begins - stopGameLoseCountDown()
+		b) One SEC after flash movie finishes - beginGameLoseCountDown()
+	4) Button pressed in handleButtonClick(event) - beginGameLoseCountDown()
+	5) When 5 SEC CountDown to 0 -> trigger gameOver()
 
 #### 16. Optimized UI/UX interface - Disable Button
         button.disabled = true;
@@ -178,3 +181,6 @@ Disable button functionality in specific cases:
 	3 - displayRound() is triggered, the Button Flash movie is running: button -> disabled
 	4 - displayRound() is triggered, the Button Flash movie is finished: button -> Can Click
     5 - input all elements in gameArray[] correctly: button -> disabled   
+
+**Practice makes perfect. Keep coding more than 10 hours per week!**
+![My coding activity in Gitlab](./Coding_Activity.png)
