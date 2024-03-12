@@ -1,7 +1,7 @@
 
 # Simon Game
 
-Simon game example web site:
+Simon game example website:
 
 https://freesimon.org/
 
@@ -13,7 +13,7 @@ https://simon-game-six-gold.vercel.app/
 1. Click the START button to begin and the game status indicator (red/green light below the START button) changes from red to green. The game will start 3 seconds after the green light is on.
 2. Simon will give the first signal (randomly flashing a colored button). Repeat the signal by clicking the same colored button.
 3. Simon will duplicate the first signal by adding another one. Repeat both signals by clicking the same colored buttons in order.
-4. Simon will duplicate the first two signals and add another one
+4. Simon will duplicate the first two signals and add another one.
 5. Continue playing as long as you can correctly repeat the signals for each sequence. In sequences with the 5th, 9th, and 13th signals, Simon automatically speeds up the intervals between the signals.
 6. If you can't repeat a sequence accurately, or if you take longer than 5 seconds to repeat a signal, Simon responds by flashing all 4 buttons at the same time. This means you have lost and the signal sequence is over. The game status indicator switches from green to red, and you will have to click the START button to start a new game.
 7. The progress (number of correctly repeated signals) of the game you have just completed (the last game) is shown on the display to the right of the START button. The highest ever score is shown on the display to the left of the start button.
@@ -24,7 +24,8 @@ https://simon-game-six-gold.vercel.app/
 3. Dashboard -- Black Circle
 4. Game Controllers x 4 - Button: red, yellow, blue, green + circle
 5. Start button - Button:
-6. Scoreboards - Button: left/right **Orbitron** https://fonts.googleapis.com/.
+6. Scoreboards - Button: left/right  
+**Orbitron** https://fonts.googleapis.com/
 
 ## Required Function
 1. Start the Game - gameStart()
