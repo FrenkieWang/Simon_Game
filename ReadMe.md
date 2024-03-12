@@ -12,7 +12,7 @@ https://simon-game-six-gold.vercel.app/
 
 **Here is the interface of Simon Game:**
 
-![Simon Game Interface](./Simon_Game_Interface.png)
+<img src="./Simon_Game_Interface.png" alt="Simon Game Interface" width="100" height="100">
 
 ## Game Rules
 1. Click the START button to begin and the game status indicator (red/green light below the START button) changes from red to green. The game will start 3 seconds after the green light is on.
