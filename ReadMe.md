@@ -10,6 +10,7 @@ My deployed project:
 https://simon-game-six-gold.vercel.app/
 
 **Here is the interface of Simon Game**
+
 ![Simon Game Interface](./Simon_Game_Interface.png)
 
 ## Game Rules
