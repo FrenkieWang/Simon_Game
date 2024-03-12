@@ -78,7 +78,8 @@ indicator turns red -> alert "Game Over".
 #### 6.  Generated numbers 1 - 4 ramdomly
 	Make a []gameArray to store the array for each round of the game
 	Make a temporary button that implements the displayRound function -> each round.
-	Press the button to generate a random book from 1-4, insert the array []gameArray from the right side
+	Press the button to generate a random book from 1-4, 
+    insert the array []gameArray from the right side.
 
 #### 7.  Connect Number with Color - buttonFlash(btnNumber)
     'Green': 1,
@@ -91,9 +92,12 @@ indicator turns red -> alert "Game Over".
     Let the corresponding color button flash.
 
 #### 8. Display movie in each Round - displayRound()
-	Make a temporary button that generates a new number to be inserted into the gameArray number and then trigger the displayRound function
+	Make a temporary button that generates a new number 
+    to be inserted into the gameArray number 
+    and then trigger the displayRound function.
 
-	Every time a new number is generated, the entire gameArray[] array, flashes the buttons correspondent to the number in sequence (from left to right).
+	Every time a new number is generated, 
+    flashes the buttons correspondent to the number in gameArray[] from left to right.
 	Sequential Flash function: buttonFlash(btnNumber) + setTimeOut(func,[time]) + Recursion 
 
 #### 9. Speed up movies according as Round progress
@@ -172,8 +176,4 @@ Disable button functionality in specific cases:
 	2 - gameStart() function is triggered: button -> disabled
 	3 - displayRound() is triggered, the Button Flash movie is running: button -> disabled
 	4 - displayRound() is triggered, the Button Flash movie is finished: button -> Can Click
-    5 - handleButtonClick(event) in every Round, input all elements in gameArray[] correctly: button -> disabled
-
-
-
-    
+    5 - input all elements in gameArray[] correctly: button -> disabled   
